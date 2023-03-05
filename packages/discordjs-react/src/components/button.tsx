@@ -63,12 +63,8 @@ class ButtonNode extends Node<ButtonProps> {
 
     this.interaction = interaction
     this.onComplete = onComplete
-    const wrappedClick = async () => {
-      await this.props.onClick(interaction)
-      this.completeInteraction()
-    }
-    void Promise.resolve(
-      wrappedClick()
+    Promise.resolve(this.props.onClick(interaction)).then(
+      () => this.completeInteraction()
     )
     return this
   }

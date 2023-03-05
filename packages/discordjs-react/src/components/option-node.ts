@@ -10,12 +10,14 @@ export function isOptionNodeTypeguard(node: Node<unknown>): node is OptionNode {
 export class OptionNode extends Node<
 Omit<OptionProps, "children" | "label" | "description">
 > {
+  public type: NodeTypes = "Option"
   get options(): MessageSelectOptionOptions {
     return {
       label: this.children.findTypeFromTypeguard(isOptionLabelNodeTypeguard)?.text ?? "",
       value: this.props.value,
       description: this.children.findTypeFromTypeguard(isOptionValueNodeTypeguard)?.text ?? "",
-      emoji: this.props.emoji,
+      emoji: this.props.emoji,      
+   
     }
   }
 }

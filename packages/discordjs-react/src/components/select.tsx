@@ -1,5 +1,5 @@
 
-import { ComponentType, MessageComponentInteraction, StringSelectMenuComponentData } from "discord.js"
+import { ComponentType, MessageComponentInteraction, SelectMenuComponentOptionData, StringSelectMenuComponentData, StringSelectMenuInteraction } from "discord.js"
 import { randomUUID } from "node:crypto"
 import type { ReactNode } from "react"
 import React from "react"
@@ -53,25 +53,19 @@ export type SelectProps = {
    * Receives the entire select change event,
    * which can be used to create new replies, etc.
    */
-  onChange?: (event: SelectChangeEvent) => void
+  onChange?: (event: StringSelectMenuInteraction) => void
 
   /**
    * Convenience shorthand for `onChange`, which receives the first selected value.
    */
-  onChangeValue?: (value: string, event: SelectChangeEvent) => void
+  onChangeValue?: (value: string, event: StringSelectMenuInteraction) => void
 
   /**
    * Convenience shorthand for `onChange`, which receives all selected values.
    */
-  onChangeMultiple?: (values: string[], event: SelectChangeEvent) => void
+  onChangeMultiple?: (values: string[], event: StringSelectMenuInteraction) => void
 }
 
-/**
- * @category Select
- */
-export type SelectChangeEvent = {
-  values: string[]
-}
 
 /**
  * See [the select menu guide](/guides/select-menu) for a usage example.
@@ -91,13 +85,6 @@ class SelectNode extends Node<SelectProps> {
   override modifyMessageOptions(message: MessageOptions): void {
     const actionRow: ActionRow = []
     message.actionRows.push(actionRow)
-
-    const options = [...this.children]
-      .filter(
-        isOptionNodeTypeguard
-      )
-      .map((node) => node.options)
-
     const {
       multiple,
       value,
@@ -111,11 +98,23 @@ class SelectNode extends Node<SelectProps> {
       ...props
     } = this.props
 
+    const options: SelectMenuComponentOptionData[] = [...this.children]
+      .filter(
+        isOptionNodeTypeguard
+      )
+      .map((node) => ({
+        ...node.options,
+        default: value === node.options.value,
+      }))
+
+
+
     const item: StringSelectMenuComponentData = {
       ...props,
       type: ComponentType.StringSelect,
       customId: this.customId,
       options,
+      disabled: this.isDeferred,
     }
 
     if (multiple) {
@@ -126,13 +125,14 @@ class SelectNode extends Node<SelectProps> {
 
     if (!multiple && value != undefined) {
       // item.values = [value]
-    }
 
+    }
     actionRow.push(item)
   }
 
   override handleComponentInteraction(
     interaction: MessageComponentInteraction,
+    onComplete: () => void
   ) {
     const isSelectInteraction =
       interaction.isStringSelectMenu() &&
@@ -140,13 +140,19 @@ class SelectNode extends Node<SelectProps> {
       !this.props.disabled
 
     if (!isSelectInteraction) return undefined
+    this.interaction = interaction
 
+    this.interaction = interaction
+    this.onComplete = onComplete
+    const firstValue = interaction.values.at(0)
+    Promise.all([
+      this.props.onChangeMultiple?.(interaction.values, interaction),
+      firstValue ? this.props.onChangeValue?.(firstValue, interaction) : undefined,
+      this.props.onChange?.(interaction),
+    ]).then(
+      () => this.completeInteraction()
+    )
 
-    // this.props.onChange?.(interaction.event)
-    // this.props.onChangeMultiple?.(interaction.event.values, interaction.event)
-    // if (interaction.event.values[0]) {
-    //   this.props.onChangeValue?.(interaction.event.values[0], interaction.event)
-    // }
     return this
   }
 }

@@ -35,7 +35,8 @@
     "watch": "pnpm with-env tsup  --silent --format cjs --watch . --watch ../../packages/discordjs-react",
     "build": "pnpm with-env tsup --format cjs",
     "watch:start": "tsc-watch --onSuccess \"npm run start\"",
-    "format": "prettier --write \"src/\""
+    "format": "prettier --write \"src/\"",
+    "clean": "rm -rf dist node_modules"
   },
   "prettier": "@sapphire/prettier-config"
 }

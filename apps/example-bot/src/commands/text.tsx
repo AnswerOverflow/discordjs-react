@@ -1,6 +1,24 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
+import React, { useState, useEffect } from 'react';
 
+
+
+const TextRenderer = () => {
+    // const [text, setText] = useState("Hello World!");
+    // // update the text once a second to something random
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         setText(Math.random().toString(36).substring(7));
+    //     }, 1000);
+    //     return () => clearInterval(interval);
+    // });
+    return (<React.Fragment>
+        hello
+
+    </React.Fragment>)
+
+}
 @ApplyOptions<Command.Options>({
     description: 'Renders text using react',
     name: "text"
@@ -16,8 +34,6 @@ export class TextCommand extends Command {
     }
     // Chat Input (slash) command
     public async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-        interaction.reply(
-            "hello"
-        )
+        this.container.discordjsJSReact.ephemeralReply(interaction, <TextRenderer />);
     }
 }

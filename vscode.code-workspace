@@ -1,0 +1,76 @@
+// Reference: https://medium.com/rewrite-tech/visual-studio-code-tips-for-monorepo-development-with-multi-root-workspaces-and-extension-6b69420ecd12
+{
+    "folders": [
+        {
+            "name": "example-bot",
+            "path": "apps/example-bot"
+        },
+        {
+            "name": "discordjs-react",
+            "path": "packages/discordjs-react"
+        },
+        {
+            "name": "root",
+            "path": "./"
+        },
+    ],
+    "settings": {
+        "editor.tabSize": 2,
+        // Disable these to view "useless" files
+        // "files.exclude": {
+        //     "**/node_modules": true,
+        //     "**/coverage/": true,
+        //     "**/.next": true,
+        //     "**/.turbo": true,
+        //     "**/dist": true,
+        // },
+        "editor.codeActionsOnSave": {
+            "source.fixAll.eslint": true
+        },
+        "editor.wordWrap": "on",
+        "eslint.validate": [
+            "javascript",
+            "javascriptreact",
+            "html",
+            "typescriptreact",
+            "typescript"
+        ],
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+        "eslint.format.enable": true,
+        "eslint.alwaysShowStatus": true,
+        "[typescript]": {
+            "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+        },
+        "javascript.suggest.autoImports": true,
+        "javascript.updateImportsOnFileMove.enabled": "always",
+        "typescript.preferences.importModuleSpecifier": "non-relative",
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": "active",
+        "[json]": {
+            "editor.defaultFormatter": "vscode.json-language-features"
+        },
+        "editor.quickSuggestions": {
+            "strings": true
+        },
+        "search.useParentIgnoreFiles": true,
+    },
+    "extensions": {
+        "recommendations": [
+            "vscode-icons-team.vscode-icons",
+            "ms-vscode-remote.vscode-remote-extensionpack",
+            "orta.vscode-twoslash-queries",
+            "dbaeumer.vscode-eslint",
+            "GitHub.copilot",
+            "eamodio.gitlens",
+            "Prisma.prisma",
+            "aaron-bond.better-comments",
+            "ZixuanChen.vitest-explorer",
+            "EditorConfig.EditorConfig",
+            "bradlc.vscode-tailwindcss",
+            "DavidAnson.vscode-markdownlint",
+            "Orta.vscode-jest",
+            "unifiedjs.vscode-mdx",
+            "usernamehw.errorlens"
+        ]
+    },
+}

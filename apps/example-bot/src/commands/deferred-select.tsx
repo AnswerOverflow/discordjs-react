@@ -21,7 +21,7 @@ function SelectMenu() {
 }
 @ApplyOptions<Command.Options>({
   description: 'Renders a deferred select menu using react',
-  name: "select"
+  name: "deferred-select"
 })
 export class SelectCommand extends Command {
   // Register Chat Input and Context Menu command
@@ -34,6 +34,12 @@ export class SelectCommand extends Command {
   }
   // Chat Input (slash) command
   public async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-    this.container.discordjsJSReact.ephemeralReply(interaction, <SelectMenu />);
+    this.container.discordjsJSReact.ephemeralReply(interaction, <>
+      <SelectMenu />
+      <SelectMenu />
+      <SelectMenu />
+      <SelectMenu />
+      <SelectMenu />
+    </>);
   }
 }

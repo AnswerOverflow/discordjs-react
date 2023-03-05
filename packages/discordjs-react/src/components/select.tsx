@@ -6,10 +6,10 @@ import React from "react"
 import { DiscordJSReactElement } from "../element"
 
 import { Node } from "../node"
-import { LOADING_EMOJI } from "../renderer"
 import { MessageOptions, ActionRowItem, ActionRow } from "../message"
 
-import { isOptionNodeTypeguard, OptionNode } from "./option-node"
+import { OptionNode } from "./option-node"
+import { isInstanceOf } from "../helpers/helpers"
 
 /**
  * @category Select
@@ -101,7 +101,7 @@ class SelectNode extends Node<SelectProps> {
 
     const options: SelectMenuComponentOptionData[] = [...this.children]
       .filter(
-        isOptionNodeTypeguard
+        isInstanceOf(OptionNode)
       )
       .map((node) => ({
         ...node.options,

@@ -23,3 +23,11 @@ export function raise(error: unknown): never {
 export function last<T>(array: T[]): T | undefined {
   return array[array.length - 1]
 }
+
+/**
+ * for narrowing instance types with array.filter
+ */
+export const isInstanceOf =
+  <T>(Constructor: new (...args: any[]) => T) =>
+  (value: unknown): value is T =>
+    value instanceof Constructor

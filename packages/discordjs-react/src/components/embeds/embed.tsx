@@ -3,7 +3,7 @@ import { DiscordJSReactElement } from "../../element"
 import { omit } from "../../helpers/helpers"
 import { Node } from "../../node"
 import { MessageOptions } from "../../message"
-import { isTextNodeTypeguard, TextNode } from "../text-node"
+import { TextNode } from "../text-node"
 import { EmbedChildNode } from "./embed-child"
 import type { EmbedOptions } from "./embed-options"
 import { snakeCaseDeep } from "../../helpers/convert-case"
@@ -52,7 +52,7 @@ class EmbedNode extends Node<EmbedProps> {
         child.modifyEmbedOptions(embed)
       }
 
-      if (isTextNodeTypeguard(child)) {
+      if (child instanceof TextNode) {
         embed.description = (embed.description || "") + child.props
       }
     }

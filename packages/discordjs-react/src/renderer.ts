@@ -1,7 +1,6 @@
 import { ActionRowData, BaseMessageOptions, ButtonBuilder, ButtonComponentData, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
 import React from "react";
 import { concatMap, Subject } from "rxjs";
-import { isButtonNode } from "./components/button";
 import { Container } from "./container";
 import { last } from "./helpers/helpers";
 import {Node} from "./node"

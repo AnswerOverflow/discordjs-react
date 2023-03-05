@@ -1,39 +1,24 @@
 
-import { Node, NodeTypes } from "../node"
+import { Node} from "../node"
 import { MessageSelectOptionOptions } from "../message"
 import type { OptionProps } from "./option"
-
-export function isOptionNodeTypeguard(node: Node<unknown>): node is OptionNode {
-  return node.type === "Option"
-}
 
 export class OptionNode extends Node<
 Omit<OptionProps, "children" | "label" | "description">
 > {
-  public type: NodeTypes = "Option"
   get options(): MessageSelectOptionOptions {
     return {
-      label: this.children.findTypeFromTypeguard(isOptionLabelNodeTypeguard)?.text ?? "",
+      label: this.children.findType(OptionLabelNode)?.text ?? "",
       value: this.props.value,
-      description: this.children.findTypeFromTypeguard(isOptionValueNodeTypeguard)?.text ?? "",
+      description: this.children.findType(OptionDescriptionNode)?.text ?? "",
       emoji: this.props.emoji,      
    
     }
   }
 }
 
-function isOptionLabelNodeTypeguard(node: Node<unknown>): node is OptionLabelNode {
-  return node.type === "OptionLabel"
-}
-
 export class OptionLabelNode extends Node<{}> {
-  public type: NodeTypes = "OptionLabel"
-}
-
-function isOptionValueNodeTypeguard(node: Node<unknown>): node is OptionDescriptionNode {
-  return node.type === "OptionDescription"
 }
 
 export class OptionDescriptionNode extends Node<{}> {
-  public type: NodeTypes = "OptionDescription"
 }

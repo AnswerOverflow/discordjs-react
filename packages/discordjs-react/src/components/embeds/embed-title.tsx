@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 import React from "react"
 import { DiscordJSReactElement } from "../../element"
-import { Node, NodeTypes } from "../../node"
+import { Node } from "../../node"
 import { EmbedChildNode } from "./embed-child"
 import type { EmbedOptions } from "./embed-options"
 
@@ -28,17 +28,13 @@ export function EmbedTitle({ children, ...props }: EmbedTitleProps) {
 
 class EmbedTitleNode extends EmbedChildNode<Omit<EmbedTitleProps, "children">> {
   override modifyEmbedOptions(options: EmbedOptions): void {
-    options.title = this.children.findTypeFromTypeguard(
-      isTitleTextNode
+    options.title = this.children.findType(
+      TitleTextNode
     )?.text ?? ""
     options.url = this.props.url
   }
 }
 
-function isTitleTextNode(node: Node<unknown>): node is TitleTextNode {
-  return node.type === "EmbedTitleText"
-}
 
 class TitleTextNode extends Node<{}> {
-  public type: NodeTypes = "EmbedTitleText"
 }

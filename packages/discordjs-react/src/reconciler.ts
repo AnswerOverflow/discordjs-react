@@ -4,7 +4,7 @@ import ReactReconciler from "react-reconciler"
 import { DefaultEventPriority } from "react-reconciler/constants"
 import { TextNode } from "./components/text-node"
 import { raise } from "./helpers/helpers"
-import { isNodeTypeguard, Node } from "./node"
+import {  Node } from "./node"
 import { Renderer } from "./renderer"
 
 const config: HostConfig<
@@ -44,8 +44,7 @@ const config: HostConfig<
     }
 
     const node = props.createNode(props.props)
-    // TODO: Re-enable this check
-    if (!isNodeTypeguard(node)) {
+    if (!(node instanceof Node)) {
       raise(`createNode function did not return a Node`)
     }
 

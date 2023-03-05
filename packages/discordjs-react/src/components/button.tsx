@@ -2,7 +2,7 @@ import { ButtonInteraction, ButtonStyle, ComponentType, MessageComponentInteract
 import { randomUUID } from "node:crypto"
 import React from "react"
 import { DiscordJSReactElement } from "../element"
-import { Node, NodeTypes } from "../node"
+import { Node } from "../node"
 import { getNextActionRow, LOADING_EMOJI, Renderer } from "../renderer"
 import { ActionRowItem, MessageOptions } from "../message"
 import type { ButtonSharedProps } from "./button-shared-props"
@@ -36,10 +36,6 @@ export function Button(props: ButtonProps) {
   )
 }
 
-export function isButtonNode(node: Node<unknown>): node is ButtonNode {
-  return node.type === "Button"
-}
-
 export class ButtonNode extends Node<ButtonProps> {
   private customId = randomUUID()
   // this has text children, but buttons themselves shouldn't yield text
@@ -56,7 +52,7 @@ export class ButtonNode extends Node<ButtonProps> {
       style: buttonStyle ? ButtonStyle[buttonStyle] : ButtonStyle.Secondary,
       disabled: (this.props.disabled || this.isDeferred !== undefined),
       emoji: (this.isDeferred ? LOADING_EMOJI : this.props.emoji),
-      label: this.children.findTypeFromTypeguard(isButtonLabelNode)?.text
+      label: this.children.findType(ButtonLabelNode)?.text
     }
     getNextActionRow(options).push(opts)
   }
@@ -75,10 +71,5 @@ export class ButtonNode extends Node<ButtonProps> {
   }
 }
 
-function isButtonLabelNode(node: Node<unknown>): node is ButtonLabelNode {
-  return node.type === "ButtonLabel"
-}
-
 class ButtonLabelNode extends Node<{}> {
-  public type: NodeTypes = "ButtonLabel"
 }

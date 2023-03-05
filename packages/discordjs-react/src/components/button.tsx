@@ -3,7 +3,7 @@ import { randomUUID } from "node:crypto"
 import React from "react"
 import { DiscordJSReactElement } from "../element"
 import { Node, NodeTypes } from "../node"
-import { ActionRowItem, getNextActionRow, MessageOptions, Renderer } from "../renderer"
+import { ActionRowItem, getNextActionRow, LOADING_EMOJI, MessageOptions, Renderer } from "../renderer"
 import type { ButtonSharedProps } from "./button-shared-props"
 
 /**
@@ -50,7 +50,7 @@ class ButtonNode extends Node<ButtonProps> {
       customId: this.customId,
       style: buttonStyle ? ButtonStyle[buttonStyle] : ButtonStyle.Secondary,
       disabled: (this.props.disabled || this.isDeferred !== undefined),
-      emoji: (this.isDeferred ? "<a:loading:1081524604419453028" : this.props.emoji),
+      emoji: (this.isDeferred ? LOADING_EMOJI : this.props.emoji),
       label: this.children.findTypeFromTypeguard(isButtonLabelNode)?.text
     }
     getNextActionRow(options).push(opts)

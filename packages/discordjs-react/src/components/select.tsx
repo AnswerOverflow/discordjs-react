@@ -6,7 +6,7 @@ import React from "react"
 import { DiscordJSReactElement } from "../element"
 
 import { Node } from "../node"
-import { MessageOptions, ActionRowItem, ActionRow } from "../renderer"
+import { MessageOptions, ActionRowItem, ActionRow, LOADING_EMOJI } from "../renderer"
 
 import { isOptionNodeTypeguard, OptionNode } from "./option-node"
 
@@ -115,6 +115,8 @@ class SelectNode extends Node<SelectProps> {
       customId: this.customId,
       options,
       disabled: this.isDeferred,
+
+      placeholder: this.isDeferred ? "Applying selection..." : props.placeholder,
     }
 
     if (multiple) {

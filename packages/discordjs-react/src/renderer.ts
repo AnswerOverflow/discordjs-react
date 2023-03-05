@@ -80,6 +80,8 @@ type RendererOptions =
 }
 export type RendererableInteractions = MessageComponentInteraction | ChatInputCommandInteraction
 
+export const LOADING_EMOJI = "<a:loading:1081524604419453028>"
+
 export class Renderer {
   readonly nodes = new Container<Node<unknown>>()
   public message?: Message

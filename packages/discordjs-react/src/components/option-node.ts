@@ -1,5 +1,6 @@
-import type { MessageSelectOptionOptions } from "../../internal/message"
+
 import { Node } from "../node"
+import { MessageSelectOptionOptions } from "../renderer"
 import type { OptionProps } from "./option"
 
 export class OptionNode extends Node<

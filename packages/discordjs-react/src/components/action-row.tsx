@@ -45,22 +45,13 @@ class ActionRowNode extends Node<{}> {
       child.modifyMessageOptions(options)
     }
   }
-  override handleComponentInteraction(interaction: MessageComponentInteraction, renderer: Renderer) {
+  override handleComponentInteraction(interaction: MessageComponentInteraction, onComplete: () => void) {
     for (const child of this.children) {
-      const handler = child.handleComponentInteraction(interaction, renderer)
+      const handler = child.handleComponentInteraction(interaction, onComplete)
       if (handler) {
         return handler
       }
     }
     return undefined
-  }
-
-  override completeInteraction(interactionId: string): boolean {
-    for (const child of this.children) {
-      if (child.completeInteraction(interactionId)) {
-        return true
-      }
-    }
-    return false
   }
 }

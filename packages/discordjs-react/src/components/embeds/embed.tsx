@@ -1,6 +1,6 @@
 import React from "react"
 import { DiscordJSReactElement } from "../../element"
-import { omit } from "../../helpers/helpers"
+import { isInstanceOf, omit } from "../../helpers/helpers"
 import { Node } from "../../node"
 import { MessageOptions } from "../../renderer"
 import { TextNode } from "../text-node"
@@ -51,6 +51,7 @@ class EmbedNode extends Node<EmbedProps> {
       if (child instanceof EmbedChildNode) {
         child.modifyEmbedOptions(embed)
       }
+      console.log(child, child instanceof TextNode)
       if (child instanceof TextNode) {
         embed.description = (embed.description || "") + child.props
       }

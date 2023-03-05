@@ -2,6 +2,9 @@ import { MessageComponentInteraction } from "discord.js"
 import { Container } from "./container"
 import { MessageOptions, Renderer } from "./renderer"
 
+export function isNodeTypeguard<Props>(node: Node<unknown>, type: new (props: Props) => Node<Props>): node is Node<Props> {
+  return node instanceof type
+}
 
 export class Node<Props> {
   readonly children = new Container<Node<unknown>>()

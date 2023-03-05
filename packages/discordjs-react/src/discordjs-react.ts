@@ -6,7 +6,6 @@ import { Client, Events, MessageComponentInteraction, RepliableInteraction } fro
 import React, { ReactNode } from "react";
 import { Renderer, RendererableInteractions } from "./renderer";
 
-export const repliedInteractionIds = new Set<string>()
 export type ReacordConfig = {
     /**
      * The max number of active instances.

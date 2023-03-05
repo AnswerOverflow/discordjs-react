@@ -1,12 +1,13 @@
 
-import { ActionRow } from "discord.js"
+import { ComponentType, MessageComponentInteraction, StringSelectMenuComponentData } from "discord.js"
 import { randomUUID } from "node:crypto"
 import type { ReactNode } from "react"
 import React from "react"
 import { DiscordJSReactElement } from "../element"
+import { isInstanceOf } from "../helpers/helpers"
 
 import { Node } from "../node"
-import { MessageOptions, ActionRowItem } from "../renderer"
+import { MessageOptions, ActionRowItem, ActionRow } from "../renderer"
 
 import { OptionNode } from "./option-node"
 
@@ -69,7 +70,7 @@ export type SelectProps = {
 /**
  * @category Select
  */
-export type SelectChangeEvent = ComponentEvent & {
+export type SelectChangeEvent = {
   values: string[]
 }
 
@@ -109,42 +110,42 @@ class SelectNode extends Node<SelectProps> {
       ...props
     } = this.props
 
-    const item: ActionRowItem = {
+    const item: StringSelectMenuComponentData = {
       ...props,
-      type: "select",
+      type: ComponentType.StringSelect,
       customId: this.customId,
       options,
-      values: [],
     }
 
     if (multiple) {
       item.minValues = minValues
       item.maxValues = maxValues
-      if (values) item.values = values
+      // if (values) item.values = values
     }
 
     if (!multiple && value != undefined) {
-      item.values = [value]
+      // item.values = [value]
     }
 
     actionRow.push(item)
   }
 
   override handleComponentInteraction(
-    interaction: ComponentInteraction,
+    interaction: MessageComponentInteraction,
   ) {
     const isSelectInteraction =
-      interaction.type === "select" &&
+      interaction.isStringSelectMenu() &&
       interaction.customId === this.customId &&
       !this.props.disabled
 
     if (!isSelectInteraction) return undefined
 
-    this.props.onChange?.(interaction.event)
-    this.props.onChangeMultiple?.(interaction.event.values, interaction.event)
-    if (interaction.event.values[0]) {
-      this.props.onChangeValue?.(interaction.event.values[0], interaction.event)
-    }
+
+    // this.props.onChange?.(interaction.event)
+    // this.props.onChangeMultiple?.(interaction.event.values, interaction.event)
+    // if (interaction.event.values[0]) {
+    //   this.props.onChangeValue?.(interaction.event.values[0], interaction.event)
+    // }
     return this
   }
 }

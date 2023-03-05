@@ -6,7 +6,9 @@
     "license": "MIT",
     "scripts": {
         "lint": "eslint \"**/*.ts*\"",
-        "clean": "rm -rf node_modules"
+        "build": "tsc",
+        "build:watch": "tsc -w",
+        "clean": "rm -rf node_modules "
     },
     "peerDependencies": {
         "discord.js": "^14",

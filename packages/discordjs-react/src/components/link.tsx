@@ -1,3 +1,4 @@
+import { ButtonStyle, ComponentType } from "discord.js"
 import React from "react"
 import { DiscordJSReactElement } from "../element"
 
@@ -31,7 +32,8 @@ export function Link({ label, children, ...props }: LinkProps) {
 class LinkNode extends Node<Omit<LinkProps, "label" | "children">> {
   override modifyMessageOptions(options: MessageOptions): void {
     getNextActionRow(options).push({
-      type: "link",
+      type: ComponentType.Button,
+      style: ButtonStyle.Link,
       disabled: this.props.disabled,
       emoji: this.props.emoji,
       label: this.children.findType(LinkTextNode)?.text,

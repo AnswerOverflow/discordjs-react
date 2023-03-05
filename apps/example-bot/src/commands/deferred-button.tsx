@@ -18,6 +18,27 @@ function Counter() {
                     setCount(count + 1)
                 }}
             />
+            <Button
+                label="Success Button"
+                style="Success"
+                onClick={async () => {
+                    // wait for 7 seconds
+                    await new Promise(resolve => setTimeout(resolve, 7000));
+                    setCount(count + 1)
+                }}
+            />
+            <Button
+
+                label="Danger Button"
+                style="Danger"
+                onClick={async () => {
+                    // wait for 7 seconds
+                    await new Promise(resolve => setTimeout(resolve, 7000));
+                    setCount(count + 1)
+                }}
+
+            />
+
         </>
     )
 }

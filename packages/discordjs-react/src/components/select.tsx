@@ -54,17 +54,17 @@ export type SelectProps = {
    * Receives the entire select change event,
    * which can be used to create new replies, etc.
    */
-  onChange?: (event: StringSelectMenuInteraction) => void
+  onChange?: (event: StringSelectMenuInteraction) => unknown | Promise<unknown>
 
   /**
    * Convenience shorthand for `onChange`, which receives the first selected value.
    */
-  onChangeValue?: (value: string, event: StringSelectMenuInteraction) => void
+  onChangeValue?: (value: string, event: StringSelectMenuInteraction) => unknown | Promise<unknown>
 
   /**
    * Convenience shorthand for `onChange`, which receives all selected values.
    */
-  onChangeMultiple?: (values: string[], event: StringSelectMenuInteraction) => void
+  onChangeMultiple?: (values: string[], event: StringSelectMenuInteraction) => unknown | Promise<unknown>
 }
 
 

@@ -20,7 +20,7 @@ export type ButtonProps = ButtonSharedProps & {
   /**
    * Happens when a user clicks the button.
    */
-  onClick: (interaction: ButtonInteraction) => Promise<void> | void
+  onClick: (interaction: ButtonInteraction) => Promise<unknown> | unknown
 }
 
 /**

@@ -1,4 +1,4 @@
-import { BaseMessageOptions, ButtonBuilder, ButtonComponentData, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
+import { ActionRowData, BaseMessageOptions, ButtonBuilder, ButtonComponentData, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
 import React from "react";
 import { concatMap, Subject } from "rxjs";
 import { isButtonNode } from "./components/button";
@@ -117,7 +117,9 @@ export class Renderer {
   }
 
 
-  private getMessageOptions(): BaseMessageOptions {
+  protected getMessageOptions(): BaseMessageOptions & {
+    components: ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>[]
+  } {
     const options: MessageOptions = {
       content: "",
       embeds: [],
@@ -183,6 +185,10 @@ export class Renderer {
     
     if(this.options.type === 'interaction') {
       const intr = this.options.interaction
+      if(intr.deferred || intr.replied) {
+        await intr.editReply(payload.options)
+        return
+      }
       const created = await intr.reply({
         ephemeral: this.options.ephemeral,
         fetchReply: true,

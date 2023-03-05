@@ -1,6 +1,13 @@
 import './lib/setup';
-import { LogLevel, SapphireClient } from '@sapphire/framework';
+import { container, LogLevel, SapphireClient } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord.js';
+import { DiscordJSReact } from '@answeroverflow/discordjs-react';
+
+declare module "@sapphire/pieces" {
+	interface Container {
+		discordjsJSReact: DiscordJSReact;
+	}
+}
 
 const client = new SapphireClient({
 	defaultPrefix: '!',
@@ -18,6 +25,7 @@ const client = new SapphireClient({
 const main = async () => {
 	try {
 		client.logger.info('Logging in');
+		container.discordjsJSReact = new DiscordJSReact(client)
 		await client.login();
 		client.logger.info('logged in');
 	} catch (error) {

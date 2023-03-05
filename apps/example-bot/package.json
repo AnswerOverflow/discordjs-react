@@ -5,6 +5,7 @@
   "author": "@sapphire",
   "license": "UNLICENSE",
   "dependencies": {
+    "@answeroverflow/discordjs-react": "workspace:*",
     "@sapphire/decorators": "^6.0.0",
     "@sapphire/discord.js-utilities": "6.0.1",
     "@sapphire/framework": "^4.0.2",
@@ -20,15 +21,19 @@
     "@sapphire/ts-config": "^3.3.4",
     "@types/node": "^18.11.18",
     "@types/ws": "^8.5.4",
+    "dotenv-cli": "^7.0.0",
+    "npm-run-all": "^4.1.5",
     "prettier": "^2.8.3",
     "tsc-watch": "^6.0.0",
+    "tsup": "^6.6.3",
     "typescript": "^4.9.4"
   },
   "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w",
-    "start": "node dist/index.js",
-    "dev": "npm run build && npm run start",
+    "with-env": "dotenv -e .env --",
+    "dev": "pnpm with-env rm -rf dist && yarn run build && run-p watch start",
+    "start": "pnpm with-env node dist/index.js",
+    "watch": "pnpm with-env tsup  --silent --format cjs --watch . --watch ../../packages/discordjs-react",
+    "build": "pnpm with-env tsup --format cjs",
     "watch:start": "tsc-watch --onSuccess \"npm run start\"",
     "format": "prettier --write \"src/\""
   },

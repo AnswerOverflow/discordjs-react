@@ -1,5 +1,23 @@
 {
-    "extends": "tsconfig/react-library.json",
+    "compilerOptions": {
+        "target": "esnext",
+        "lib": ["dom", "dom.iterable", "esnext"],
+        "jsx": "react",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "allowJs": true,
+        "checkJs": true,
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "noEmit": true,
+        "useDefineForClassFields": true
+    },
     "include": [
         "."
     ],

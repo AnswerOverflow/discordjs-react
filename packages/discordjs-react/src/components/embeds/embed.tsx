@@ -1,4 +1,3 @@
-
 import React from "react"
 import { DiscordJSReactElement } from "../../element"
 import { omit } from "../../helpers/helpers"

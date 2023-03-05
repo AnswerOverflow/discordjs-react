@@ -1,27 +1,25 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { Button } from "@answeroverflow/discordjs-react"
 
 
-
-const TextRenderer = () => {
-    const [text, setText] = useState("Hello World!");
-    // update the text once a second to something random
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setText(Math.random().toString(36).substring(7));
-        }, 1000);
-        return () => clearInterval(interval);
-    });
-    return (<React.Fragment>
-        {text}
-
-    </React.Fragment>)
-
+function Counter() {
+    const [count, setCount] = React.useState(0)
+    return (
+        <>
+            this button was clicked {count} times
+            <Button
+                label="+1"
+                style="Success"
+                onClick={() => setCount(count + 1)}
+            />
+        </>
+    )
 }
 @ApplyOptions<Command.Options>({
-    description: 'Renders text using react',
-    name: "text"
+    description: 'Renders a button using react',
+    name: "button"
 })
 export class TextCommand extends Command {
     // Register Chat Input and Context Menu command
@@ -34,6 +32,6 @@ export class TextCommand extends Command {
     }
     // Chat Input (slash) command
     public async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-        this.container.discordjsJSReact.ephemeralReply(interaction, <TextRenderer />);
+        this.container.discordjsJSReact.ephemeralReply(interaction, <Counter />);
     }
 }

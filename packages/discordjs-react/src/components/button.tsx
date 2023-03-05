@@ -1,12 +1,9 @@
+import { ButtonInteraction, ButtonStyle, ComponentType, MessageComponentInteraction } from "discord.js"
 import { randomUUID } from "node:crypto"
 import React from "react"
-import { DiscordJSReactElement } from "../../internal/element.js"
-import type { ComponentInteraction } from "../../internal/interaction"
-import type { ActionRowItem, MessageOptions } from "../../internal/message"
-import { getNextActionRow } from "../../internal/message"
+import { DiscordJSReactElement } from "../element"
 import { Node } from "../node"
-import type { Renderer } from "../../internal/renderers/renderer.js"
-import type { ComponentEvent } from "../component-event"
+import { ActionRowItem, getNextActionRow, MessageOptions, Renderer } from "../renderer"
 import type { ButtonSharedProps } from "./button-shared-props"
 
 /**
@@ -17,18 +14,13 @@ export type ButtonProps = ButtonSharedProps & {
    * The style determines the color of the button and signals intent.
    * @see https://discord.com/developers/docs/interactions/message-components#button-object-button-styles
    */
-  style?: "primary" | "secondary" | "success" | "danger"
+  style?: keyof Omit<typeof ButtonStyle, 'Link'>,
 
   /**
    * Happens when a user clicks the button.
    */
-  onClick: (event: ButtonClickEvent) => Promise<void> | void
+  onClick: (interaction: ButtonInteraction) => Promise<void> | void
 }
-
-/**
- * @category Button
- */
-export type ButtonClickEvent = ComponentEvent
 
 /**
  * @category Button
@@ -52,33 +44,34 @@ class ButtonNode extends Node<ButtonProps> {
   }
 
   override modifyMessageOptions(options: MessageOptions): void {
+    const buttonStyle = this.props.style
     const opts: ActionRowItem = {
-      type: "button",
+      type: ComponentType.Button,
       customId: this.customId,
-      style: this.props.style ?? "secondary",
+      style: buttonStyle ? ButtonStyle[buttonStyle] : ButtonStyle.Secondary,
       disabled: (this.props.disabled || this.deferredInteractionId !== undefined),
       emoji: (this.deferredInteractionId ? "<a:loading:1081524604419453028" : this.props.emoji),
-      label: this.children.findType(ButtonLabelNode)?.text,
+      label: "Button" //this.children.findType(ButtonLabelNode)?.text,
     }
     getNextActionRow(options).push(opts)
   }
 
-  override handleComponentInteraction(interaction: ComponentInteraction, renderer: Renderer) {
+  override handleComponentInteraction(interaction: MessageComponentInteraction, renderer: Renderer) {
+    const shouldHandleInteraction = interaction.isButton() && interaction.customId === this.customId
     if (
-      interaction.type === "button" &&
-      interaction.customId === this.customId
-    ) {
-      void Promise.resolve(
-        this.props.onClick(interaction.event)
-      ).then(
-        () => {
-          this.clearDeferred(interaction.id)
-          // renderer.render()
-        },
-      )
-      return this
-    }
-    return undefined
+      !shouldHandleInteraction
+    )
+      return undefined
+
+    void Promise.resolve(
+      this.props.onClick(interaction)
+    ).then(
+      () => {
+        this.clearDeferred(interaction.id)
+        renderer.render()
+      },
+    )
+    return this
   }
 }
 

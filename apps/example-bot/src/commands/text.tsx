@@ -4,17 +4,19 @@ import React, { useState, useEffect } from 'react';
 
 
 
-const TextRenderer = () => {
-    const [text, setText] = useState("Hello World!");
-    // update the text once a second to something random
+const CounterRenderer = () => {
+    const [counter, setCounter] = useState(0);
+    // update once a second
     useEffect(() => {
         const interval = setInterval(() => {
-            setText(Math.random().toString(36).substring(7));
+            setCounter(counter + 1);
         }, 1000);
         return () => clearInterval(interval);
     });
+
+
     return (<React.Fragment>
-        {text}
+        {counter}
 
     </React.Fragment>)
 
@@ -34,6 +36,6 @@ export class TextCommand extends Command {
     }
     // Chat Input (slash) command
     public async chatInputRun(interaction: Command.ChatInputCommandInteraction) {
-        this.container.discordjsJSReact.ephemeralReply(interaction, <TextRenderer />);
+        this.container.discordjsJSReact.ephemeralReply(interaction, <CounterRenderer />);
     }
 }

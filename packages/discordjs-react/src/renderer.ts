@@ -1,11 +1,11 @@
-import { ChatInputCommandInteraction, Interaction, Message, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction } from "discord.js";
+import { BaseMessageOptions, ButtonBuilder, ButtonComponentData, ButtonStyle, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction } from "discord.js";
 import React from "react";
 import { concatMap, Subject } from "rxjs";
 import type { Except } from "type-fest";
 import { EmbedOptions } from "./components/embeds/embed-options";
 import { SelectProps } from "./components/select";
 import { Container } from "./container";
-import { repliedInteractionIds } from "./discordjs-react";
+import { last } from "./helpers/helpers";
 import {Node} from "./node"
 import { reconciler } from "./reconciler";
 
@@ -16,20 +16,15 @@ export type MessageOptions = {
 }
 
 export type ActionRow = ActionRowItem[]
-
-export type ActionRowItem =
-  | MessageButtonOptions
-  | MessageLinkOptions
-  | MessageSelectOptions
-
+export type ActionRowItem = MessageActionRowComponentData
 export type MessageButtonOptions = {
   type: "button"
   customId: string
   label?: string
-  style?: "primary" | "secondary" | "success" | "danger"
+  style?: keyof typeof ButtonStyle
   disabled?: boolean
   emoji?: string
-}
+} 
 
 export type MessageLinkOptions = {
   type: "link"
@@ -52,9 +47,23 @@ export type MessageSelectOptionOptions = {
   emoji?: string
 }
 
+export function getNextActionRow(options: MessageOptions): ActionRow {
+  let actionRow = last(options.actionRows)
+  const firstItem = actionRow?.[0]
+  if (
+    actionRow == undefined ||
+    actionRow.length >= 5 ||
+    firstItem && 'type' in firstItem && firstItem.type === ComponentType.StringSelect 
+  ) {
+    actionRow = []
+    options.actionRows.push(actionRow)
+  }
+  return actionRow
+}
+
 
 type UpdatePayload =
-  | { action: "update" | "deactivate"; options: MessageOptions }
+  | { action: "update" | "deactivate"; options: BaseMessageOptions }
   | { action: "deferUpdate"; interaction: MessageComponentInteraction; node: Node<unknown>; renderer: Renderer }
   | { action: "destroy" }
 
@@ -80,7 +89,6 @@ export abstract class Renderer {
       // eslint-disable-next-line unicorn/no-null
       null,
     )    
-    console.log("initialContent", initialContent)
     if (initialContent) {
       reconciler.updateContainer(initialContent, container)
     }
@@ -129,9 +137,9 @@ export abstract class Renderer {
     return undefined
   }
 
-  protected abstract createMessage(options: MessageOptions): Promise<Message> | Message;
+  protected abstract createMessage(options: BaseMessageOptions): Promise<Message> | Message;
 
-  private getMessageOptions(): MessageOptions {
+  private getMessageOptions(): BaseMessageOptions {
     const options: MessageOptions = {
       content: "",
       embeds: [],
@@ -140,7 +148,14 @@ export abstract class Renderer {
     for (const node of this.nodes) {
       node.modifyMessageOptions(options)
     }
-    return options
+    return {
+      components: options.actionRows.map((row) => ({
+        type: ComponentType.ActionRow,
+        components: row,
+      })),
+      content: options.content,
+      embeds: options.embeds,
+    }
   }
 
   private async updateMessage(payload: UpdatePayload) {
@@ -162,9 +177,9 @@ export abstract class Renderer {
     }
 
     if (payload.action === "deferUpdate") {
-      const deferred = await payload.interaction.deferUpdate()
-      if (!deferred) return
-      repliedInteractionIds.add(payload.interaction.id)
+      if(this.interaction?.deferred) return
+      console.log("deferring")
+      await payload.interaction.deferUpdate()
       payload.node.handleDeferred(payload.interaction);
       payload.renderer.render()
       return
@@ -186,8 +201,7 @@ export abstract class Renderer {
       return
     }
 
-    console.log(this.interaction)
-
+    // TODO: Add listener to message delete
     this.message = await this.createMessage(payload.options)
   }
 }

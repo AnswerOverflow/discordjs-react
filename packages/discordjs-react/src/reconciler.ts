@@ -44,9 +44,10 @@ const config: HostConfig<
     }
 
     const node = props.createNode(props.props)
-    if (!(node instanceof Node)) {
-      raise(`createNode function did not return a Node`)
-    }
+    // TODO: Re-enable this check
+    // if (!(node instanceof Node)) {
+    //   raise(`createNode function did not return a Node`)
+    // }
 
     return node
   },

@@ -9,7 +9,6 @@ export class InteractionReplyRenderer extends Renderer {
   }
 
   protected override async createMessage(options: MessageOptions) {    
-    console.log("createMessage", options)
     if(this.interaction.replied){
       return this.interaction.followUp({
         ...options,

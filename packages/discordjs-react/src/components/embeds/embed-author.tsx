@@ -1,9 +1,9 @@
 import type { ReactNode } from "react"
 import React from "react"
-import { DiscordJSReactElement } from "../element"
-import { EmbedChildNode } from "./embeds/embed-child"
-import { EmbedOptions } from "./embeds/embed-options"
-
+import { DiscordJSReactElement } from "../../element"
+import { EmbedChildNode } from "./embed-child"
+import { EmbedOptions } from "./embed-options"
+import { Node } from "../../node"
 
 /**
  * @category Embed

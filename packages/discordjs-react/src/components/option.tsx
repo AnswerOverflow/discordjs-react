@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 import React from "react"
-import { DiscordJSReactElement } from "../../internal/element"
+import { DiscordJSReactElement } from "../element"
 import {
   OptionDescriptionNode,
   OptionLabelNode,

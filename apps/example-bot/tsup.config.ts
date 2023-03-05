@@ -5,5 +5,6 @@ export default defineConfig({
     skipNodeModulesBundle: true,
     noExternal: [
         "@answeroverflow/discordjs-react",
+        "lodash-es"
     ],
 });

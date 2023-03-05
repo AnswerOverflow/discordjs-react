@@ -1,8 +1,8 @@
 import React from "react"
-import { DiscordJSReactElement } from "../../internal/element"
-import type { MessageOptions } from "../../internal/message"
-import { getNextActionRow } from "../../internal/message"
+import { DiscordJSReactElement } from "../element"
+
 import { Node } from "../node"
+import { MessageOptions, getNextActionRow } from "../renderer"
 import type { ButtonSharedProps } from "./button-shared-props"
 
 /**

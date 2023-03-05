@@ -19,3 +19,7 @@ export function toError(value: unknown) {
 export function raise(error: unknown): never {
   throw toError(error)
 }
+
+export function last<T>(array: T[]): T | undefined {
+  return array[array.length - 1]
+}

@@ -36,7 +36,7 @@ export class DiscordJSReact {
       }
     public createRenderer(renderer: Renderer, initialContent?: ReactNode) {
         if(this.renderers.length >= this.maxInstances){
-            this.deactivate(this.renderers[0])
+            this.deactivate(this.renderers[0]!)
         }
         this.renderers.push(renderer)
         if(initialContent){

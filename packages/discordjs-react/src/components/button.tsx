@@ -49,27 +49,26 @@ class ButtonNode extends Node<ButtonProps> {
       type: ComponentType.Button,
       customId: this.customId,
       style: buttonStyle ? ButtonStyle[buttonStyle] : ButtonStyle.Secondary,
-      disabled: (this.props.disabled || this.deferredInteractionId !== undefined),
-      emoji: (this.deferredInteractionId ? "<a:loading:1081524604419453028" : this.props.emoji),
+      disabled: (this.props.disabled || this.isDeferred !== undefined),
+      emoji: (this.isDeferred ? "<a:loading:1081524604419453028" : this.props.emoji),
       label: "Button" //this.children.findType(ButtonLabelNode)?.text,
     }
     getNextActionRow(options).push(opts)
   }
 
-  override handleComponentInteraction(interaction: MessageComponentInteraction, renderer: Renderer) {
+  override handleComponentInteraction(interaction: MessageComponentInteraction, onComplete: () => void) {
     const shouldHandleInteraction = interaction.isButton() && interaction.customId === this.customId
-    if (
-      !shouldHandleInteraction
-    )
+    if (!shouldHandleInteraction)
       return undefined
 
+    this.interaction = interaction
+    this.onComplete = onComplete
+    const wrappedClick = async () => {
+      await this.props.onClick(interaction)
+      this.completeInteraction()
+    }
     void Promise.resolve(
-      this.props.onClick(interaction)
-    ).then(
-      () => {
-        this.clearDeferred(interaction.id)
-        renderer.render()
-      },
+      wrappedClick()
     )
     return this
   }

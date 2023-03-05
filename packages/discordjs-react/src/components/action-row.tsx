@@ -55,9 +55,9 @@ class ActionRowNode extends Node<{}> {
     return undefined
   }
 
-  override clearDeferred(interactionId: string): boolean {
+  override completeInteraction(interactionId: string): boolean {
     for (const child of this.children) {
-      if (child.clearDeferred(interactionId)) {
+      if (child.completeInteraction(interactionId)) {
         return true
       }
     }

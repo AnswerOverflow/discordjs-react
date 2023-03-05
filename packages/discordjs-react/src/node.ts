@@ -1,30 +1,28 @@
-import { Interaction, MessageComponentInteraction } from "discord.js"
+import { MessageComponentInteraction } from "discord.js"
 import { Container } from "./container"
 import { MessageOptions, Renderer } from "./renderer"
 
 
 export class Node<Props> {
   readonly children = new Container<Node<unknown>>()
-  public deferredInteractionId: string | undefined = undefined
-
+  public interaction?: MessageComponentInteraction = undefined
+  public onComplete?: () => void = undefined
   constructor(public props: Props) { }
 
   modifyMessageOptions(options: MessageOptions) { }
 
-  handleComponentInteraction(interaction: MessageComponentInteraction, renderer: Renderer): Node<unknown> | undefined {
+  handleComponentInteraction(interaction: MessageComponentInteraction, onComplete: () => void): Node<unknown> | undefined {
     return undefined
   }
 
-  handleDeferred(interaction: MessageComponentInteraction) {
-    this.deferredInteractionId = interaction.id
+
+  completeInteraction() {
+    this.interaction = undefined
+    if(this.onComplete) this.onComplete()
   }
 
-  clearDeferred(interactionId: string) {
-    if (this.deferredInteractionId === interactionId) {
-      this.deferredInteractionId = undefined
-      return true
-    }
-    return false;
+  get isDeferred() {
+    return this.interaction?.deferred
   }
 
   get text(): string {

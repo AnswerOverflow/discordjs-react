@@ -66,7 +66,7 @@ type UpdatePayload =
   | { action: "stateChange" | "deactivate"; options: BaseMessageOptions }
   | { action: "deferUpdate"; interaction: MessageComponentInteraction; node: Node<unknown>; renderer: Renderer }
   | { action: "destroy" }
-  | { action: "update"; interaction: MessageComponentInteraction; options: BaseMessageOptions }
+  | { action: "interactionComplete"; interaction: MessageComponentInteraction; options: BaseMessageOptions }
 
 type RendererOptions = 
 | {
@@ -135,17 +135,18 @@ export class Renderer {
 
   handleComponentInteraction(interaction: MessageComponentInteraction) {
     for (const node of this.nodes) {
-      const handler = node.handleComponentInteraction(interaction, this)
+      const handler = node.handleComponentInteraction(interaction, () => {
+        this.updates.next({
+          options: this.getMessageOptions(),
+          action: "interactionComplete",
+          interaction,
+        })
+      })
       if (handler) {
         // TODO: Add another set timeout to handle failing deferred interactions
         setTimeout(() => {
           this.updates.next({ action: "deferUpdate", interaction, node: handler, renderer: this })
         }, 2000) // We have to respond within 3 seconds, so we wait 2 seconds to give the interaction time to run then fallback to the long running task
-        this.updates.next({
-          action: 'update',
-          interaction,
-          options: this.getMessageOptions()
-        })
         return handler
       }
     }
@@ -191,8 +192,7 @@ export class Renderer {
 
     if (payload.action === "deferUpdate") {
       if(payload.interaction.deferred || payload.interaction.replied) return
-      await payload.interaction.deferUpdate();
-      payload.node.handleDeferred(payload.interaction);
+      await payload.interaction.deferUpdate();      
       payload.renderer.render()
       return
     }
@@ -200,18 +200,20 @@ export class Renderer {
     // State update:
     if(payload.action === 'stateChange' && this.message){
       if(this.options.type === 'interaction'){
-        console.log("hello")
         await this.options.interaction.editReply(payload.options)
-        console.log('no error')
       } else {
         await this.message.edit(payload.options)
       }
       return      
     }
 
-    if(payload.action === 'update'){
-      const intr = payload.interaction
-      await intr.update(payload.options)
+    if(payload.action === 'interactionComplete'){
+      if(payload.interaction.deferred){
+        await payload.interaction.editReply(payload.options)
+        return
+      }else {
+        await payload.interaction.update(payload.options)
+      }
       return
     }
     

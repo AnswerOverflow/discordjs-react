@@ -1,6 +1,6 @@
 {
     "name": "@answeroverflow/discordjs-react",
-    "version": "0.0.4",
+    "version": "0.0.5",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "type": "module",
@@ -11,6 +11,17 @@
     "license": "MIT",
     "publishConfig": {
         "access": "public"
+    },
+    "exports": {
+        ".": {
+            "import": "./dist/main.js",
+            "require": "./dist/main.cjs",
+            "types": "./dist/main.d.ts"
+        },
+        "./package.json": {
+            "import": "./package.json",
+            "require": "./package.json"
+        }
     },
     "scripts": {
         "prepublish": "pnpm build",

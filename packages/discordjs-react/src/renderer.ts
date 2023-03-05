@@ -162,7 +162,6 @@ export class Renderer {
     for (const node of this.nodes) {
       node.modifyMessageOptions(options)
     }
-    console.log(options.embeds)
     return {
       components: options.actionRows.map((row) => ({
         type: ComponentType.ActionRow,

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 import React from "react"
 import { DiscordJSReactElement } from "../../element"
-import { Node } from "../../node"
+import { Node, NodeTypes } from "../../node"
 import { EmbedChildNode } from "./embed-child"
 import type { EmbedOptions } from "./embed-options"
 
@@ -35,12 +35,25 @@ class EmbedFieldNode extends EmbedChildNode<EmbedFieldProps> {
   override modifyEmbedOptions(options: EmbedOptions): void {
     options.fields ??= []
     options.fields.push({
-      name: this.children.findType(FieldNameNode)?.text ?? "",
-      value: this.children.findType(FieldValueNode)?.text ?? "",
+      name: this.children.findTypeFromTypeguard(isFieldNameNode)?.text ?? "",
+      value: this.children.findTypeFromTypeguard(isFieldValueNode)?.text ?? "",
       inline: this.props.inline,
     })
   }
 }
 
-class FieldNameNode extends Node<{}> { }
-class FieldValueNode extends Node<{}> { }
+
+
+function isFieldNameNode(node: Node<unknown>): node is FieldNameNode {
+  return node.type === "EmbedFieldName"
+}
+class FieldNameNode extends Node<{}> {
+  public type: NodeTypes = "EmbedFieldName"
+}
+
+function isFieldValueNode(node: Node<unknown>): node is FieldValueNode {
+  return node.type === "EmbedFieldValue"
+}
+class FieldValueNode extends Node<{}> {
+  public type: NodeTypes = "EmbedFieldValue"
+}

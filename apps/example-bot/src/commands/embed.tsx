@@ -1,14 +1,22 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import React from 'react';
-import { Embed } from "@answeroverflow/discordjs-react"
+import { Embed, EmbedAuthor, EmbedField, EmbedFooter, EmbedTitle, EmbedThumbnail, EmbedImage } from "@answeroverflow/discordjs-react"
 
 
 function Counter() {
     return (
         <>
             <Embed >
+                <EmbedTitle>Embed Title</EmbedTitle>
+                <EmbedAuthor name="Embed Author" />
+                <EmbedField name="Embed Field" value="Embed Field Value" inline={true} />
+                <EmbedField name="Embed Field" value="✅" inline={true} />
                 Hello!
+                <EmbedFooter text="Embed Footer" />
+                <EmbedThumbnail url="https://i.imgur.com/wSTFkRM.png" />
+                <EmbedImage url="https://i.imgur.com/wSTFkRM.png" />
+
             </Embed>
         </>
     )

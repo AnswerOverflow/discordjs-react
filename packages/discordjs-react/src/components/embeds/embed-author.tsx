@@ -3,7 +3,7 @@ import React from "react"
 import { DiscordJSReactElement } from "../../element"
 import { EmbedChildNode } from "./embed-child"
 import { EmbedOptions } from "./embed-options"
-import { Node } from "../../node"
+import { Node, NodeTypes } from "../../node"
 
 /**
  * @category Embed
@@ -31,11 +31,17 @@ export function EmbedAuthor(props: EmbedAuthorProps) {
 class EmbedAuthorNode extends EmbedChildNode<EmbedAuthorProps> {
   override modifyEmbedOptions(options: EmbedOptions): void {
     options.author = {
-      name: this.children.findType(AuthorTextNode)?.text ?? "",
+      name: this.children.findTypeFromTypeguard(isAuthorTextNode)?.text ?? "",
       url: this.props.url,
       icon_url: this.props.iconUrl,
     }
   }
 }
 
-class AuthorTextNode extends Node<{}> { }
+function isAuthorTextNode(node: Node<unknown>): node is AuthorTextNode {
+  return node.type === "EmbedAuthorText"
+}
+
+class AuthorTextNode extends Node<{}> {
+  public type: NodeTypes = "EmbedAuthorText"
+}

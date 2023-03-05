@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 import React from "react"
 import { DiscordJSReactElement } from "../../element"
-import { Node } from "../../node"
+import { Node, NodeTypes } from "../../node"
 import { EmbedChildNode } from "./embed-child"
 import type { EmbedOptions } from "./embed-options"
 
@@ -33,7 +33,7 @@ class EmbedFooterNode extends EmbedChildNode<
 > {
   override modifyEmbedOptions(options: EmbedOptions): void {
     options.footer = {
-      text: this.children.findType(FooterTextNode)?.text ?? "",
+      text: this.children.findTypeFromTypeguard(isFooterTextNode)?.text ?? "",
       icon_url: this.props.iconUrl,
     }
     options.timestamp = this.props.timestamp
@@ -42,4 +42,11 @@ class EmbedFooterNode extends EmbedChildNode<
   }
 }
 
-class FooterTextNode extends Node<{}> { }
+
+function isFooterTextNode(node: Node<unknown>): node is FooterTextNode {
+  return node.type === "EmbedFooterText"
+}
+
+class FooterTextNode extends Node<{}> {
+  public type: NodeTypes = "EmbedFooterText"
+}

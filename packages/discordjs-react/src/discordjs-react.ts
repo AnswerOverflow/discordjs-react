@@ -19,7 +19,7 @@ export class DiscordJSReact {
     protected renderers: Renderer[] = [];
     constructor(public readonly client: Client, public readonly config: ReacordConfig = {}) {
         client.on(Events.InteractionCreate, (interaction) => {
-            if(!(interaction instanceof MessageComponentInteraction)) return
+            if(!(interaction.isMessageComponent())) return
             for(const renderer of this.renderers){
                 renderer.handleComponentInteraction(interaction);
             }

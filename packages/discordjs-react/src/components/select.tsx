@@ -4,12 +4,11 @@ import { randomUUID } from "node:crypto"
 import type { ReactNode } from "react"
 import React from "react"
 import { DiscordJSReactElement } from "../element"
-import { isInstanceOf } from "../helpers/helpers"
 
 import { Node } from "../node"
 import { MessageOptions, ActionRowItem, ActionRow } from "../renderer"
 
-import { OptionNode } from "./option-node"
+import { isOptionNodeTypeguard, OptionNode } from "./option-node"
 
 /**
  * @category Select
@@ -94,7 +93,9 @@ class SelectNode extends Node<SelectProps> {
     message.actionRows.push(actionRow)
 
     const options = [...this.children]
-      .filter(isInstanceOf(OptionNode))
+      .filter(
+        isOptionNodeTypeguard
+      )
       .map((node) => node.options)
 
     const {

@@ -14,6 +14,34 @@ function Counter() {
                 style="Success"
                 onClick={() => setCount(count + 1)}
             />
+            <Button
+                label="Success Button"
+                style="Success"
+                onClick={() => setCount(count + 1)}
+            />
+            <Button
+                label="Danger Button"
+                style="Danger"
+                onClick={() => setCount(count + 1)}
+            />
+            <Button
+                label="Seconary Button"
+                style="Secondary"
+                onClick={() => setCount(count + 1)}
+            />
+            <Button
+                label="Primary Button"
+                style="Primary"
+                onClick={() => setCount(count + 1)}
+            />
+            <Button
+                label={count.toString()}
+                style={
+                    // cycle through the styles
+                    (["Success", "Danger", "Secondary", "Primary"] as const)[count % 4]
+                }
+                onClick={() => setCount(count + 1)}
+            />
         </>
     )
 }

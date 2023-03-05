@@ -1,9 +1,9 @@
 import React from "react"
 import { DiscordJSReactElement } from "../../element"
-import { isInstanceOf, omit } from "../../helpers/helpers"
+import { omit } from "../../helpers/helpers"
 import { Node } from "../../node"
 import { MessageOptions } from "../../renderer"
-import { TextNode } from "../text-node"
+import { isTextNodeTypeguard, TextNode } from "../text-node"
 import { EmbedChildNode } from "./embed-child"
 import type { EmbedOptions } from "./embed-options"
 import { snakeCaseDeep } from "../../helpers/convert-case"
@@ -51,8 +51,8 @@ class EmbedNode extends Node<EmbedProps> {
       if (child instanceof EmbedChildNode) {
         child.modifyEmbedOptions(embed)
       }
-      console.log(child, child instanceof TextNode)
-      if (child instanceof TextNode) {
+
+      if (isTextNodeTypeguard(child)) {
         embed.description = (embed.description || "") + child.props
       }
     }

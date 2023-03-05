@@ -2,7 +2,7 @@ import { ButtonStyle, ComponentType } from "discord.js"
 import React from "react"
 import { DiscordJSReactElement } from "../element"
 
-import { Node } from "../node"
+import { Node, NodeTypes } from "../node"
 import { MessageOptions, getNextActionRow } from "../renderer"
 import type { ButtonSharedProps } from "./button-shared-props"
 
@@ -36,10 +36,15 @@ class LinkNode extends Node<Omit<LinkProps, "label" | "children">> {
       style: ButtonStyle.Link,
       disabled: this.props.disabled,
       emoji: this.props.emoji,
-      label: this.children.findType(LinkTextNode)?.text,
+      label: this.children.findTypeFromTypeguard(isLinkTextNode)?.text ?? "",
       url: this.props.url,
     })
   }
 }
 
-class LinkTextNode extends Node<{}> { }
+function isLinkTextNode(node: Node<unknown>): node is LinkTextNode {
+  return node.type === "LinkLabel"
+}
+class LinkTextNode extends Node<{}> {
+  public type: NodeTypes = "LinkLabel"
+}

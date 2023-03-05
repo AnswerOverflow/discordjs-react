@@ -25,9 +25,11 @@ export class Container<T> {
     return this.items.find(predicate)
   }
 
-  findType<U extends T>(type: new (...args: any[]) => U): U | undefined {
+  findTypeFromTypeguard<U extends T>(
+    typeguard: (item: T) => item is U
+  ): U | undefined {
     for (const item of this.items) {
-      if (item instanceof type) return item
+      if (typeguard(item)) return item
     }
   }
 

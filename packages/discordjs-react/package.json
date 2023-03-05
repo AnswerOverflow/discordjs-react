@@ -1,9 +1,13 @@
 {
     "name": "@answeroverflow/discordjs-react",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "main": "./index.ts",
     "types": "./index.ts",
+    "private": false,
     "license": "MIT",
+    "publishConfig": {
+        "access": "public"
+    },
     "scripts": {
         "lint": "eslint \"**/*.ts*\"",
         "build": "tsc",

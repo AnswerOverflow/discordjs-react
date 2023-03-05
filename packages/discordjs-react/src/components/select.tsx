@@ -6,7 +6,8 @@ import React from "react"
 import { DiscordJSReactElement } from "../element"
 
 import { Node } from "../node"
-import { MessageOptions, ActionRowItem, ActionRow, LOADING_EMOJI } from "../renderer"
+import { LOADING_EMOJI } from "../renderer"
+import { MessageOptions, ActionRowItem, ActionRow } from "../message"
 
 import { isOptionNodeTypeguard, OptionNode } from "./option-node"
 
@@ -104,7 +105,7 @@ class SelectNode extends Node<SelectProps> {
       )
       .map((node) => ({
         ...node.options,
-        default: value === node.options.value,
+        default: (value === node.options.value && !this.isDeferred),
       }))
 
 

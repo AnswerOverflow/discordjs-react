@@ -1,52 +1,13 @@
-import { BaseMessageOptions, ButtonBuilder, ButtonComponentData, ButtonStyle, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
+import { BaseMessageOptions, ButtonBuilder, ButtonComponentData, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
 import React from "react";
 import { concatMap, Subject } from "rxjs";
-import type { Except } from "type-fest";
-import { EmbedOptions } from "./components/embeds/embed-options";
-import { SelectProps } from "./components/select";
+import { isButtonNode } from "./components/button";
 import { Container } from "./container";
 import { last } from "./helpers/helpers";
 import {Node} from "./node"
 import { reconciler } from "./reconciler";
-
-export type MessageOptions = {
-  content: string
-  embeds: EmbedOptions[]
-  actionRows: ActionRow[]
-}
-
-export type ActionRow = ActionRowItem[]
-export type ActionRowItem = MessageActionRowComponentData
-export type MessageButtonOptions = {
-  type: "button"
-  customId: string
-  label?: string
-  style?: keyof typeof ButtonStyle
-  disabled?: boolean
-  emoji?: string
-} 
-
-export type MessageLinkOptions = {
-  type: "link"
-  url: string
-  label?: string
-  emoji?: string
-  disabled?: boolean
-}
-
-export type MessageSelectOptions = Except<SelectProps, "children" | "value"> & {
-  type: "select"
-  customId: string
-  options: MessageSelectOptionOptions[]
-}
-
-export type MessageSelectOptionOptions = {
-  label: string
-  value: string
-  description?: string
-  emoji?: string
-}
-
+import type {ButtonNode} from "./components/button"
+import { MessageOptions, ActionRow, DiscordJSReactMessage } from "./message";
 export function getNextActionRow(options: MessageOptions): ActionRow {
   let actionRow = last(options.actionRows)
   const firstItem = actionRow?.[0]
@@ -84,7 +45,7 @@ export const LOADING_EMOJI = "<a:loading:1081524604419453028>"
 
 export class Renderer {
   readonly nodes = new Container<Node<unknown>>()
-  public message?: Message
+  public message?: DiscordJSReactMessage
   public active = true
   public updates = new Subject<UpdatePayload>()
   constructor(public options: RendererOptions, initialContent?: React.ReactNode) {
@@ -155,6 +116,7 @@ export class Renderer {
     return undefined
   }
 
+
   private getMessageOptions(): BaseMessageOptions {
     const options: MessageOptions = {
       content: "",
@@ -177,14 +139,14 @@ export class Renderer {
   private async updateMessage(payload: UpdatePayload) {
     if (payload.action === "destroy") {
       this.updateSubscription.unsubscribe()
-      await this.message?.delete()
+      await this.message?.raw.delete()
       return
     }
 
     if (payload.action === "deactivate") {
       this.updateSubscription.unsubscribe()
 
-      await this.message?.edit({
+      await this.message?.raw.edit({
         ...payload.options,
         // TODO: Disable all components
         components: []
@@ -204,7 +166,7 @@ export class Renderer {
       if(this.options.type === 'interaction'){
         await this.options.interaction.editReply(payload.options)
       } else {
-        await this.message.edit(payload.options)
+        await this.message.raw.edit(payload.options)
       }
       return      
     }
@@ -221,11 +183,12 @@ export class Renderer {
     
     if(this.options.type === 'interaction') {
       const intr = this.options.interaction
-      this.message = await intr.reply({
+      const created = await intr.reply({
         ephemeral: this.options.ephemeral,
         fetchReply: true,
         ...payload.options
-      })              
+      })           
+      this.message = new DiscordJSReactMessage(created, this)   
     }
   }
 }

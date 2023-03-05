@@ -3,7 +3,8 @@ import React from "react"
 import { DiscordJSReactElement } from "../element"
 
 import { Node, NodeTypes } from "../node"
-import { MessageOptions, getNextActionRow } from "../renderer"
+import { getNextActionRow } from "../renderer"
+import { MessageOptions } from "../message"
 import type { ButtonSharedProps } from "./button-shared-props"
 
 /**

@@ -1,6 +1,6 @@
 
 import { Node, NodeTypes } from "../node"
-import { MessageOptions } from "../renderer"
+import { MessageOptions } from "../message"
 
 export function isTextNodeTypeguard(node: Node<unknown>): node is TextNode {
   return node.type === 'Text'

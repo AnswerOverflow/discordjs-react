@@ -4,6 +4,7 @@
 
 import { Client, Events, MessageComponentInteraction, RepliableInteraction } from "discord.js";
 import React, { ReactNode } from "react";
+import { DiscordJSReactMessage } from "./message";
 import { Renderer, RendererableInteractions } from "./renderer";
 
 export type ReacordConfig = {
@@ -48,5 +49,9 @@ export class DiscordJSReact {
             interaction,
             ephemeral: true
         },initialContent))
+    }
+
+    public getMessage(index: number = 0) {
+        return this.renderers.at(index)?.message
     }
 }

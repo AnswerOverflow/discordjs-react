@@ -1,6 +1,6 @@
 
 import { Node, NodeTypes } from "../node"
-import { MessageSelectOptionOptions } from "../renderer"
+import { MessageSelectOptionOptions } from "../message"
 import type { OptionProps } from "./option"
 
 export function isOptionNodeTypeguard(node: Node<unknown>): node is OptionNode {

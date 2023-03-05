@@ -1,6 +1,7 @@
 import { MessageComponentInteraction } from "discord.js"
 import { Container } from "./container"
-import { MessageOptions, Renderer } from "./renderer"
+import { Renderer } from "./renderer"
+import { MessageOptions } from "./message"
 
 // For some reason isinstance is broken, so we have to do this, its ugly
 // if you are reading this, submit a PR to fix it please god

@@ -1,7 +1,8 @@
 import type { ReactNode } from "react"
 import React from "react"
 import { DiscordJSReactElement } from "../element"
-import { MessageOptions, Renderer } from "../renderer"
+import { Renderer } from "../renderer"
+import { MessageOptions } from "../message"
 import { Node } from "../node"
 import { MessageComponentInteraction } from "discord.js"
 

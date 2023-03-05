@@ -3,7 +3,8 @@ import { randomUUID } from "node:crypto"
 import React from "react"
 import { DiscordJSReactElement } from "../element"
 import { Node, NodeTypes } from "../node"
-import { ActionRowItem, getNextActionRow, LOADING_EMOJI, MessageOptions, Renderer } from "../renderer"
+import { getNextActionRow, LOADING_EMOJI, Renderer } from "../renderer"
+import { ActionRowItem, MessageOptions } from "../message"
 import type { ButtonSharedProps } from "./button-shared-props"
 
 /**
@@ -35,7 +36,11 @@ export function Button(props: ButtonProps) {
   )
 }
 
-class ButtonNode extends Node<ButtonProps> {
+export function isButtonNode(node: Node<unknown>): node is ButtonNode {
+  return node.type === "Button"
+}
+
+export class ButtonNode extends Node<ButtonProps> {
   private customId = randomUUID()
   // this has text children, but buttons themselves shouldn't yield text
   // eslint-disable-next-line class-methods-use-this

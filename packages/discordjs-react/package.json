@@ -1,0 +1,30 @@
+{
+    "name": "@answeroverflow/discordjs-react",
+    "version": "0.0.0",
+    "main": "./index.tsx",
+    "types": "./index.tsx",
+    "license": "MIT",
+    "scripts": {
+        "lint": "eslint \"**/*.ts*\""
+    },
+    "peerDependencies": {
+        "discord.js": "^14",
+        "react": ">=18"
+    },
+    "dependencies": {
+        "@types/node": "*",
+        "@types/react": "*",
+        "@types/react-reconciler": "^0.28.0",
+        "react-reconciler": "^0.29.0"
+    },
+    "devDependencies": {
+        "@types/react": "^17.0.37",
+        "discord.js": "^14.7.1",
+        "eslint": "^7.32.0",
+        "eslint-config-custom": "workspace:*",
+        "react": "^18.2.0",
+        "tsconfig": "workspace:*",
+        "type-fest": "^2.17.0",
+        "typescript": "^4.5.2"
+    }
+}

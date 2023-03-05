@@ -38,5 +38,8 @@
     "format": "prettier --write \"src/\"",
     "clean": "rm -rf dist node_modules"
   },
+  "overrides": {
+    "discord-api-types": "0.37.20"
+  },
   "prettier": "@sapphire/prettier-config"
 }

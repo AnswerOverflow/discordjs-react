@@ -4,7 +4,6 @@
 
 import { Client, Events, MessageComponentInteraction, RepliableInteraction } from "discord.js";
 import React, { ReactNode } from "react";
-import { InteractionReplyRenderer } from "./interaction-reply-renderer";
 import { Renderer, RendererableInteractions } from "./renderer";
 
 export const repliedInteractionIds = new Set<string>()
@@ -45,6 +44,10 @@ export class DiscordJSReact {
     }
 
     public ephemeralReply(interaction: RendererableInteractions, initialContent: ReactNode) {
-        this.createRenderer(new InteractionReplyRenderer(initialContent, interaction))
+        this.createRenderer(new Renderer({
+            type: 'interaction',
+            interaction,
+            ephemeral: true
+        },initialContent))
     }
 }

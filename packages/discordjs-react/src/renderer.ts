@@ -1,4 +1,4 @@
-import { BaseMessageOptions, ButtonBuilder, ButtonComponentData, ButtonStyle, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction } from "discord.js";
+import { BaseMessageOptions, ButtonBuilder, ButtonComponentData, ButtonStyle, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
 import React from "react";
 import { concatMap, Subject } from "rxjs";
 import type { Except } from "type-fest";
@@ -62,20 +62,30 @@ export function getNextActionRow(options: MessageOptions): ActionRow {
 }
 
 
-type UpdatePayload =
-  | { action: "update" | "deactivate"; options: BaseMessageOptions }
+type UpdatePayload =  
+  | { action: "stateChange" | "deactivate"; options: BaseMessageOptions }
   | { action: "deferUpdate"; interaction: MessageComponentInteraction; node: Node<unknown>; renderer: Renderer }
   | { action: "destroy" }
+  | { action: "update"; interaction: MessageComponentInteraction; options: BaseMessageOptions }
 
+type RendererOptions = 
+| {
+  type: "interaction"
+  interaction: RendererableInteractions
+  ephemeral: boolean
+}
+| { 
+  type: "message"
+  channel: TextBasedChannel
+}
 export type RendererableInteractions = MessageComponentInteraction | ChatInputCommandInteraction
 
-export abstract class Renderer {
+export class Renderer {
   readonly nodes = new Container<Node<unknown>>()
   public message?: Message
   public active = true
   public updates = new Subject<UpdatePayload>()
-
-  constructor(initialContent?: React.ReactNode, public interaction?: RendererableInteractions) {
+  constructor(public options: RendererOptions, initialContent?: React.ReactNode) {
     const container = reconciler.createContainer(
       this,
       0,
@@ -106,7 +116,7 @@ export abstract class Renderer {
 
     this.updates.next({
       options: this.getMessageOptions(),
-      action: "update",
+      action: "stateChange",
     })
   }
 
@@ -131,13 +141,16 @@ export abstract class Renderer {
         setTimeout(() => {
           this.updates.next({ action: "deferUpdate", interaction, node: handler, renderer: this })
         }, 2000) // We have to respond within 3 seconds, so we wait 2 seconds to give the interaction time to run then fallback to the long running task
+        this.updates.next({
+          action: 'update',
+          interaction,
+          options: this.getMessageOptions()
+        })
         return handler
       }
     }
     return undefined
   }
-
-  protected abstract createMessage(options: BaseMessageOptions): Promise<Message> | Message;
 
   private getMessageOptions(): BaseMessageOptions {
     const options: MessageOptions = {
@@ -177,31 +190,38 @@ export abstract class Renderer {
     }
 
     if (payload.action === "deferUpdate") {
-      if(this.interaction?.deferred) return
-      console.log("deferring")
-      await payload.interaction.deferUpdate()
+      if(payload.interaction.deferred || payload.interaction.replied) return
+      await payload.interaction.deferUpdate();
       payload.node.handleDeferred(payload.interaction);
       payload.renderer.render()
       return
     }
 
-
-    // TODO: Maybe clear out interaction?
-    if (this.interaction?.replied) {
-      if(this.interaction.isMessageComponent()){
-        await this.interaction.update(payload.options)        
+    // State update:
+    if(payload.action === 'stateChange' && this.message){
+      if(this.options.type === 'interaction'){
+        console.log("hello")
+        await this.options.interaction.editReply(payload.options)
+        console.log('no error')
       } else {
-        await this.interaction.editReply(payload.options)
+        await this.message.edit(payload.options)
       }
-      return
+      return      
     }
 
-    if (this.message) {
-      await this.message.edit(payload.options)
+    if(payload.action === 'update'){
+      const intr = payload.interaction
+      await intr.update(payload.options)
       return
     }
-
-    // TODO: Add listener to message delete
-    this.message = await this.createMessage(payload.options)
+    
+    if(this.options.type === 'interaction') {
+      const intr = this.options.interaction
+      this.message = await intr.reply({
+        ephemeral: this.options.ephemeral,
+        fetchReply: true,
+        ...payload.options
+      })              
+    }
   }
 }

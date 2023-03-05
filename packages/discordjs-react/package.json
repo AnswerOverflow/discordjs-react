@@ -21,6 +21,9 @@
         "rxjs": "^7.8.0",
         "type-fest": "3.5.7"
     },
+    "overrides": {
+        "discord-api-types": "0.37.20"
+      },
     "devDependencies": {
         "@types/lodash-es": "^4.17.6",
         "@types/react": "^17.0.37",

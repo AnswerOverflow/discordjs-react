@@ -171,18 +171,15 @@ export abstract class Renderer {
     }
 
 
-    // TODO: This is wrong
-    // if (this.interaction?.replied) {
-    //   if(this.interaction.isMessageComponent()){
-    //     const promise = this.interaction.update(payload.options)
-    //     this.interaction = undefined
-    //     await promise
-    //   } else {
-    //     await this.interaction.editReply(payload.options)
-    //     this.interaction = undefined
-    //   }
-    //   return
-    // }
+    // TODO: Maybe clear out interaction?
+    if (this.interaction?.replied) {
+      if(this.interaction.isMessageComponent()){
+        await this.interaction.update(payload.options)        
+      } else {
+        await this.interaction.editReply(payload.options)
+      }
+      return
+    }
 
     if (this.message) {
       await this.message.edit(payload.options)

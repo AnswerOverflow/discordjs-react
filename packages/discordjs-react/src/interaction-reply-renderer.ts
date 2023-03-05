@@ -19,6 +19,7 @@ export class InteractionReplyRenderer extends Renderer {
     return this.interaction.reply(
       {
         ...options,
+        ephemeral: true,
         fetchReply: true,
       }
     )

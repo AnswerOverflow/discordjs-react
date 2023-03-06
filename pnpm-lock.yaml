@@ -61,7 +61,7 @@ importers:
 
   packages/discordjs-react:
     specifiers:
-      '@answeroverflow/discordjs-mock': 0.0.8
+      '@answeroverflow/discordjs-mock': 0.0.9
       '@types/lodash-es': ^4.17.6
       '@types/node': '*'
       '@types/react': '*'
@@ -78,7 +78,7 @@ importers:
       type-fest: 3.5.7
       typescript: ^4.5.2
     dependencies:
-      '@answeroverflow/discordjs-mock': 0.0.8_discord.js@14.7.1
+      '@answeroverflow/discordjs-mock': 0.0.9_discord.js@14.7.1
       '@types/node': 18.14.6
       '@types/react': 18.0.28
       '@types/react-reconciler': 0.28.2
@@ -113,8 +113,8 @@ importers:
 
 packages:
 
-  /@answeroverflow/discordjs-mock/0.0.8_discord.js@14.7.1:
-    resolution: {integrity: sha512-3VGU0lnf4taBt1vYT9Mk6JZavcu+48XC9Zh+s+ntkuomrRaPqJ+0rEfVGIY1973vs8LAp5VUQ55lyADUrZ2qPw==}
+  /@answeroverflow/discordjs-mock/0.0.9_discord.js@14.7.1:
+    resolution: {integrity: sha512-Mnt5/H03M15ufldYusHoSY3kCEvMwPXhNuz/eNAfWuY3wBQumxKFuHaOJrKB3XnfKsIMtKcl12QiwCSAa1cB6Q==}
     peerDependencies:
       discord.js: ^14.7.1
     dependencies:

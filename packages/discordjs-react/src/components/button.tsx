@@ -66,6 +66,10 @@ export class ButtonNode extends Node<ButtonProps> {
     this.onComplete = onComplete
     Promise.resolve(this.props.onClick(interaction)).then(
       () => this.completeInteraction()
+    ).catch(
+      (err) => {
+        throw err
+      }
     )
     return this
   }

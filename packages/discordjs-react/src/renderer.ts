@@ -1,4 +1,4 @@
-import { ActionRowData, BaseMessageOptions, ButtonBuilder, ButtonComponentData, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
+import { ActionRowComponentOptions, ActionRowData, BaseMessageOptions, ButtonBuilder, ButtonComponentData, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
 import React from "react";
 import { concatMap, Subject } from "rxjs";
 import { Container } from "./container";
@@ -117,7 +117,7 @@ export class Renderer {
 
 
   protected getMessageOptions(): BaseMessageOptions & {
-    components: ActionRowData<MessageActionRowComponentData | MessageActionRowComponentBuilder>[]
+    components: ActionRowData<ActionRowComponentOptions>[]
   } {
     const options: MessageOptions = {
       content: "",

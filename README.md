@@ -1,1 +1,3 @@
-# This is a heavily modified version of Reacord from itsMapleLeaf, please support the original author 
+# Discordjs-React
+
+## A heavily modified fork of [Reacord](https://reacord.mapleleaf.dev/)

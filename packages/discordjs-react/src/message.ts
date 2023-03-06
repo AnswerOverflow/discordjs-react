@@ -1,4 +1,4 @@
-import { ButtonStyle, Message, MessageActionRowComponentData } from "discord.js";
+import { ActionRowComponentOptions, ButtonStyle, Message } from "discord.js";
 import { Except } from "type-fest";
 import { EmbedOptions } from "./components/embeds/embed-options";
 import { SelectProps } from "./components/select";
@@ -11,7 +11,7 @@ export type MessageOptions = {
 };
 
 export type ActionRow = ActionRowItem[];
-export type ActionRowItem = MessageActionRowComponentData;
+export type ActionRowItem = ActionRowComponentOptions;
 export type MessageButtonOptions = {
   type: "button";
   customId: string;

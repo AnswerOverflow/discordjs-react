@@ -1,6 +1,6 @@
 {
     "name": "@answeroverflow/discordjs-react",
-    "version": "0.0.8",
+    "version": "0.0.9",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "type": "module",
@@ -35,6 +35,7 @@
         "react": ">=18"
     },
     "dependencies": {
+        "@answeroverflow/discordjs-mock": "0.0.3",
         "@types/node": "*",
         "@types/react": "*",
         "@types/react-reconciler": "^0.28.0",

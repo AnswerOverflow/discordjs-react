@@ -5,7 +5,7 @@
 import { Client, Events, MessageComponentInteraction, RepliableInteraction } from "discord.js";
 import React, { ReactNode } from "react";
 import { DiscordJSReactMessage } from "./message";
-import { Renderer, RendererableInteractions } from "./renderer";
+import { Renderer, RendererableInteractions, RendererOptions } from "./renderer";
 
 export type ReacordConfig = {
     /**
@@ -33,22 +33,30 @@ export class DiscordJSReact {
       private get maxInstances() {
         return this.config.maxInstances ?? 50
       }
-    public createRenderer(renderer: Renderer, initialContent?: ReactNode) {
+    public createRenderer(renderer: RendererOptions, initialContent?: ReactNode) {
+        return new Renderer(renderer, this.client, initialContent)
+    }
+
+    public activateRenderer(renderer: Renderer) {
         if(this.renderers.length >= this.maxInstances){
             this.deactivate(this.renderers[0]!)
         }
-        this.renderers.push(renderer)
-        if(initialContent){
-            renderer.render()
-        }
+        this.renderers.push(renderer) 
+        return renderer       
     }
+    
 
     public ephemeralReply(interaction: RendererableInteractions, initialContent: ReactNode) {
-        this.createRenderer(new Renderer({
-            type: 'interaction',
-            interaction,
-            ephemeral: true
-        },initialContent))
+        return this.activateRenderer(
+            this.createRenderer(
+                {
+                    type: "interaction",
+                    interaction,
+                    ephemeral: true,
+                },
+                initialContent
+            )
+        )
     }
 
     public getMessage(index: number = 0) {

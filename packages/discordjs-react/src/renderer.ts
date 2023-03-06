@@ -1,4 +1,4 @@
-import { ActionRowComponentOptions, ActionRowData, BaseMessageOptions, ButtonBuilder, ButtonComponentData, ChatInputCommandInteraction, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
+import { ActionRowComponentOptions, ActionRowData, BaseMessageOptions, ButtonBuilder, ButtonComponentData, ChatInputCommandInteraction, Client, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
 import React from "react";
 import { concatMap, Subject } from "rxjs";
 import { Container } from "./container";
@@ -28,7 +28,7 @@ type UpdatePayload =
   | { action: "destroy" }
   | { action: "interactionComplete"; interaction: MessageComponentInteraction; options: BaseMessageOptions }
 
-type RendererOptions = 
+export type RendererOptions = 
 | {
   type: "interaction"
   interaction: RendererableInteractions
@@ -47,7 +47,7 @@ export class Renderer {
   public message?: DiscordJSReactMessage
   public active = true
   public updates = new Subject<UpdatePayload>()
-  constructor(public options: RendererOptions, initialContent?: React.ReactNode) {
+  constructor(public options: RendererOptions, public client: Client, initialContent?: React.ReactNode) {
     const container = reconciler.createContainer(
       this,
       0,
@@ -137,6 +137,10 @@ export class Renderer {
     }
   }
 
+  protected trackMessage(message: Message) {
+    this.message = new DiscordJSReactMessage(message, this)
+  }
+
   private async updateMessage(payload: UpdatePayload) {
     if (payload.action === "destroy") {
       this.updateSubscription.unsubscribe()
@@ -192,8 +196,8 @@ export class Renderer {
         ephemeral: this.options.ephemeral,
         fetchReply: true,
         ...payload.options
-      })           
-      this.message = new DiscordJSReactMessage(created, this)   
+      })
+      this.trackMessage(created)
     }
   }
 }

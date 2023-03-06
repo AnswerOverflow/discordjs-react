@@ -37,7 +37,7 @@ export function Button(props: ButtonProps) {
 }
 
 export class ButtonNode extends Node<ButtonProps> {
-  private customId = randomUUID()
+  public customId = randomUUID()
   // this has text children, but buttons themselves shouldn't yield text
   // eslint-disable-next-line class-methods-use-this
   override get text() {

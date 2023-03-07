@@ -25,6 +25,15 @@ export class DiscordJSReact {
                 renderer.handleComponentInteraction(interaction);
             }
         })
+        console.log("Did instanceof work correctly?", this instanceof DiscordJSReact)
+        console.log("Did instanceof work correctly?", this instanceof DiscordJSReact)
+        console.log("Did instanceof work correctly?", this instanceof DiscordJSReact)
+        console.log("Did instanceof work correctly?", this instanceof DiscordJSReact)
+        console.log("Did instanceof work correctly?", this instanceof DiscordJSReact)
+        console.log("Did instanceof work correctly?", this instanceof DiscordJSReact)
+        console.log("Did instanceof work correctly?", this instanceof DiscordJSReact)
+        console.log("Did instanceof work correctly?", this instanceof DiscordJSReact)
+        console.log("Did instanceof work correctly?", this instanceof DiscordJSReact)
     }
     private deactivate(renderer: Renderer) {
         this.renderers = this.renderers.filter((it) => it !== renderer)

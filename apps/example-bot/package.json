@@ -32,7 +32,7 @@
     "with-env": "dotenv -e .env --",
     "dev": "pnpm with-env rm -rf dist && yarn run build && run-p watch start",
     "start": "pnpm with-env node dist/index.js",
-    "watch": "pnpm with-env tsup  --silent --format cjs --watch . --watch ../../packages/discordjs-react",
+    "watch": "pnpm with-env tsup  --silent --format cjs --watch",
     "build": "pnpm with-env tsup --format cjs",
     "watch:start": "tsc-watch --onSuccess \"npm run start\"",
     "format": "prettier --write \"src/\"",

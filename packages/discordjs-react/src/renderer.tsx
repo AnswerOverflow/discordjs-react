@@ -1,11 +1,11 @@
 import { ActionRowComponentOptions, ActionRowData, BaseMessageOptions, ButtonBuilder, ButtonComponentData, ChatInputCommandInteraction, Client, ComponentType, Interaction, InteractionButtonComponentData, Message, MessageActionRowComponent, MessageActionRowComponentBuilder, MessageActionRowComponentData, MessageComponentInteraction, MessagePayloadOption, RepliableInteraction, TextBasedChannel } from "discord.js";
-import React from "react";
+import React, { ReactNode } from "react";
 import { concatMap, Subject } from "rxjs";
 import { Container } from "./container";
 import { last } from "./helpers/helpers";
-import {Node} from "./node"
+import { Node } from "./node"
 import { reconciler } from "./reconciler";
-import type {ButtonNode} from "./components/button"
+import type { ButtonNode } from "./components/button"
 import { MessageOptions, ActionRow, DiscordJSReactMessage } from "./message";
 export function getNextActionRow(options: MessageOptions): ActionRow {
   let actionRow = last(options.actionRows)
@@ -13,7 +13,7 @@ export function getNextActionRow(options: MessageOptions): ActionRow {
   if (
     actionRow == undefined ||
     actionRow.length >= 5 ||
-    firstItem && 'type' in firstItem && firstItem.type === ComponentType.StringSelect 
+    firstItem && 'type' in firstItem && firstItem.type === ComponentType.StringSelect
   ) {
     actionRow = []
     options.actionRows.push(actionRow)
@@ -22,22 +22,26 @@ export function getNextActionRow(options: MessageOptions): ActionRow {
 }
 
 
-type UpdatePayload =  
+type UpdatePayload =
   | { action: "stateChange" | "deactivate"; options: BaseMessageOptions }
   | { action: "deferUpdate"; interaction: MessageComponentInteraction; node: Node<unknown>; renderer: Renderer }
   | { action: "destroy" }
   | { action: "interactionComplete"; interaction: MessageComponentInteraction; options: BaseMessageOptions }
 
-export type RendererOptions = 
-| {
-  type: "interaction"
-  interaction: RendererableInteractions
-  ephemeral: boolean
-}
-| { 
-  type: "message"
-  channel: TextBasedChannel
-}
+export type RendererWrapper = (props: {
+  children: ReactNode
+}) => React.ReactNode
+
+export type RendererOptions =
+  (| {
+    type: "interaction"
+    interaction: RendererableInteractions
+    ephemeral: boolean
+  }
+    | {
+      type: "message"
+      channel: TextBasedChannel
+    })
 export type RendererableInteractions = MessageComponentInteraction | ChatInputCommandInteraction
 
 export const LOADING_EMOJI = "<a:loading:1081524604419453028>"
@@ -47,7 +51,7 @@ export class Renderer {
   public message?: DiscordJSReactMessage
   public active = true
   public updates = new Subject<UpdatePayload>()
-  constructor(public options: RendererOptions, public client: Client, initialContent?: React.ReactNode) {
+  constructor(public options: RendererOptions, public client: Client, initialContent?: React.ReactNode, wrapper: RendererWrapper = (props) => <>{props.children}</>) {
     const container = reconciler.createContainer(
       this,
       0,
@@ -60,10 +64,8 @@ export class Renderer {
       () => { },
       // eslint-disable-next-line unicorn/no-null
       null,
-    )    
-    if (initialContent) {
-      reconciler.updateContainer(initialContent, container)
-    }
+    )
+    reconciler.updateContainer(wrapper({ children: initialContent }), container)
   }
 
   private updateSubscription = this.updates
@@ -160,35 +162,38 @@ export class Renderer {
     }
 
     if (payload.action === "deferUpdate") {
-      if(payload.interaction.deferred || payload.interaction.replied) return
-      await payload.interaction.deferUpdate();      
+      if (payload.interaction.deferred || payload.interaction.replied) return
+      await payload.interaction.deferUpdate();
       payload.renderer.render()
       return
     }
 
     // State update:
-    if(payload.action === 'stateChange' && this.message){
-      if(this.options.type === 'interaction'){
+    if (payload.action === 'stateChange' && this.message) {
+      if (this.options.type === 'interaction') {
         await this.options.interaction.editReply(payload.options)
       } else {
         await this.message.raw.edit(payload.options)
       }
-      return      
+      return
     }
 
-    if(payload.action === 'interactionComplete'){
-      if(payload.interaction.deferred){
+    if (payload.action === 'interactionComplete') {
+      if (payload.interaction.replied) {
+        return
+      }
+      if (payload.interaction.deferred) {
         await payload.interaction.editReply(payload.options)
         return
-      }else {
+      } else {
         await payload.interaction.update(payload.options)
       }
       return
     }
-    
-    if(this.options.type === 'interaction') {
+
+    if (this.options.type === 'interaction') {
       const intr = this.options.interaction
-      if(intr.deferred || intr.replied) {
+      if (intr.deferred || intr.replied) {
         await intr.editReply(payload.options)
         return
       }

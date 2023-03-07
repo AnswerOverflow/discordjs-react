@@ -14,7 +14,8 @@
     "@sapphire/utilities": "^3.11.0",
     "@skyra/env-utilities": "^1.1.0",
     "colorette": "^2.0.19",
-    "discord.js": "^14.7.1"
+    "discord.js": "^14.7.1",
+    "react": "^18.2.0"
   },
   "devDependencies": {
     "@sapphire/prettier-config": "^1.4.5",

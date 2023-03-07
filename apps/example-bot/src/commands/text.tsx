@@ -2,9 +2,7 @@ import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import React, { useState, useEffect } from 'react';
 
-
-
-const CounterRenderer = () => {
+export const useCounter = () => {
     const [counter, setCounter] = useState(0);
     // update once a second
     useEffect(() => {
@@ -13,6 +11,11 @@ const CounterRenderer = () => {
         }, 1000);
         return () => clearInterval(interval);
     });
+    return counter;
+}
+
+const CounterRenderer = () => {
+    const counter = useCounter();
 
 
     return (<React.Fragment>

@@ -7,6 +7,7 @@ import { Node } from "./node"
 import { reconciler } from "./reconciler";
 import { MessageOptions, ActionRow, DiscordJSReactMessage } from "./message";
 import { randomUUID } from "crypto";
+import { RendererWrapper } from "./discordjs-react";
 export function getNextActionRow(options: MessageOptions): ActionRow {
   let actionRow = last(options.actionRows)
   const firstItem = actionRow?.[0]
@@ -28,9 +29,6 @@ type UpdatePayload =
   | { action: "destroy" }
   | { action: "interactionComplete"; interaction: MessageComponentInteraction; options: BaseMessageOptions }
 
-export type RendererWrapper = (props: {
-  children: ReactNode
-}) => React.ReactNode
 
 export type RendererOptions =
   (| {
@@ -62,7 +60,7 @@ export class Renderer {
   public active = true
   public updates = new Subject<UpdatePayload>()
   public rendererId = randomUUID();
-  constructor(public options: RendererOptions, public client: Client, initialContent?: React.ReactNode, wrapper: RendererWrapper = (props) => <>{props.children}</>) {
+  constructor(public options: RendererOptions, public client: Client, initialContent?: React.ReactNode, Wrapper: RendererWrapper = (props) => <>{props.children}</>) {
     const container = reconciler.createContainer(
       this,
       0,
@@ -76,9 +74,14 @@ export class Renderer {
       // eslint-disable-next-line unicorn/no-null
       null,
     )
-    reconciler.updateContainer(wrapper({
-      children: <InstanceContext.Provider value={this}>{initialContent}</InstanceContext.Provider>
-    }), container)
+    reconciler.updateContainer(
+      (
+        <InstanceContext.Provider value={this}>
+          <Wrapper>
+            {initialContent}
+          </Wrapper>
+        </InstanceContext.Provider>
+      ), container)
   }
 
   private updateSubscription = this.updates

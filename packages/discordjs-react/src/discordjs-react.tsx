@@ -4,7 +4,6 @@
 
 import { Client, Events, MessageComponentInteraction, RepliableInteraction } from "discord.js";
 import React, { ReactNode } from "react";
-import { DiscordJSReactMessage } from "./message";
 import { Renderer, RendererableInteractions, RendererOptions } from "./renderer";
 
 export type RendererWrapper = React.FC<{ children: ReactNode }>
@@ -20,7 +19,7 @@ export type ReacordConfig = {
 
 export class DiscordJSReact {
     // Maps the interaction id to the renderer
-    protected renderers: Renderer[] = [];
+    public renderers: Renderer[] = [];
     constructor(public readonly client: Client, public readonly config: ReacordConfig & {
         wrapper?: RendererWrapper
     } = {
@@ -41,7 +40,7 @@ export class DiscordJSReact {
         return this.config.maxInstances ?? 50
     }
     public createRenderer(renderer: RendererOptions, initialContent?: ReactNode) {
-        return new Renderer(renderer, this.client, initialContent, this.config.wrapper)
+        return new Renderer(renderer, this, initialContent)
     }
 
     public activateRenderer(renderer: Renderer) {

@@ -7,7 +7,7 @@ import { Node } from "./node"
 import { reconciler } from "./reconciler";
 import { MessageOptions, ActionRow, DiscordJSReactMessage } from "./message";
 import { randomUUID } from "crypto";
-import { RendererWrapper } from "./discordjs-react";
+import { DiscordJSReact, RendererWrapper } from "./discordjs-react";
 export function getNextActionRow(options: MessageOptions): ActionRow {
   let actionRow = last(options.actionRows)
   const firstItem = actionRow?.[0]
@@ -60,7 +60,7 @@ export class Renderer {
   public active = true
   public updates = new Subject<UpdatePayload>()
   public rendererId = randomUUID();
-  constructor(public options: RendererOptions, public client: Client, initialContent?: React.ReactNode, Wrapper: RendererWrapper = (props) => <>{props.children}</>) {
+  constructor(public options: RendererOptions, public discordJSReact: DiscordJSReact, initialContent?: React.ReactNode) {
     const container = reconciler.createContainer(
       this,
       0,
@@ -77,9 +77,9 @@ export class Renderer {
     reconciler.updateContainer(
       (
         <InstanceContext.Provider value={this}>
-          <Wrapper>
+          <discordJSReact.config.wrapper>
             {initialContent}
-          </Wrapper>
+          </discordJSReact.config.wrapper>
         </InstanceContext.Provider>
       ), container)
   }
@@ -195,6 +195,8 @@ export class Renderer {
     }
 
     if (payload.action === 'interactionComplete') {
+      if (this.discordJSReact.renderers.find(r => r.options.type === 'interaction' && r.options.interaction.id === payload.interaction.id))
+        return // If another renderer is handling this interaction, we don't want to update the message
       if (payload.interaction.replied) {
         return
       }

@@ -30,7 +30,7 @@ export class TestRenderer extends Renderer {
                 custom_id: node.customId,
               }
             })
-            await emitEvent(this.client, Events.InteractionCreate, interaction);
+            await emitEvent(this.discordJSReact.client, Events.InteractionCreate, interaction);
             if(waitForInteractionToComplete){
               // wait until replied is true
               await new Promise(

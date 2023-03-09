@@ -12,7 +12,7 @@ export class TestDiscordJSReact extends DiscordJSReact {
     }) {
         super(client, config)
     }
-    public override createRenderer(renderer: RendererOptions, initialContent?: ReactNode) {
-        return new TestRenderer(renderer, this.client, initialContent, this.config.wrapper)
+    public override createRenderer(renderer: RendererOptions, initialContent?: ReactNode): TestRenderer {
+        return new TestRenderer(renderer, this, initialContent)
     }
 }

@@ -66,7 +66,7 @@ importers:
       '@answeroverflow/discordjs-mock': 0.0.9
       '@types/lodash-es': ^4.17.6
       '@types/node': '*'
-      '@types/react': '*'
+      '@types/react': ^18.0.28
       '@types/react-reconciler': ^0.28.0
       discord.js: ^14.7.1
       eslint: ^7.32.0
@@ -648,7 +648,6 @@ packages:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.2
       csstype: 3.1.1
-    dev: false
 
   /@types/scheduler/0.16.2:
     resolution: {integrity: sha512-hppQEBDmlwhFAXKJX2KnWLYu5yMfi91yazPb2l+lbJiwW+wdo1gNeRA+3RgNSO39WYX2euey41KEwnqesU2Jew==}

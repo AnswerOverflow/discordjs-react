@@ -12,10 +12,6 @@ type Wrapper = (props: {
 }) => JSX.Element
 
 
-export type SetInstanceContextData = (existingData: {
-    instance: Renderer
-}) => unknown
-
 export type ReacordConfig = {
     /**
      * The max number of active instances.
@@ -23,7 +19,6 @@ export type ReacordConfig = {
      */
     maxInstances?: number
     wrapper: Wrapper
-    setInstanceContextData?: SetInstanceContextData
 }
 
 export class DiscordJSReact {
@@ -49,7 +44,7 @@ export class DiscordJSReact {
         return this.config.maxInstances ?? 50
     }
     public createRenderer(renderer: RendererOptions, initialContent?: ReactNode) {
-        return new Renderer(renderer, this.client, initialContent, this.config.wrapper, this.config.setInstanceContextData)
+        return new Renderer(renderer, this.client, initialContent, this.config.wrapper)
     }
 
     public activateRenderer(renderer: Renderer) {

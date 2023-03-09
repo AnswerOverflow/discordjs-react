@@ -1,14 +1,14 @@
+import { useInstance } from '@answeroverflow/discordjs-react';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import React from 'react';
-import { useCustomInstanceData } from '../lib/context';
 
 
 
 function Consumer() {
-  const value = useCustomInstanceData();
+  const value = useInstance();
   return <>
-    {value.data.foo}
+    {value.rendererId}
   </>
 }
 

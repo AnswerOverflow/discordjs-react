@@ -3,7 +3,6 @@ import { container, LogLevel, SapphireClient } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord.js';
 import { ActionRow, Button, DiscordJSReact } from '@answeroverflow/discordjs-react';
 import React from 'react';
-import { setInstanceContextData } from './lib/context';
 // import { ContextProvider } from './lib/context';
 declare module "@sapphire/pieces" {
 	interface Container {
@@ -36,8 +35,7 @@ const main = async () => {
 				return <>{props.children}<ActionRow>
 					<Button onClick={(interaction) => interaction.reply("Clicked from global app wrapper")} label="Global button" />
 				</ActionRow></>
-			},
-			setInstanceContextData
+			}
 		})
 		await client.login();
 		client.logger.info('logged in');

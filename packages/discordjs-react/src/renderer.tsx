@@ -5,9 +5,8 @@ import { Container } from "./container";
 import { last } from "./helpers/helpers";
 import { Node } from "./node"
 import { reconciler } from "./reconciler";
-import type { ButtonNode } from "./components/button"
 import { MessageOptions, ActionRow, DiscordJSReactMessage } from "./message";
-import { SetInstanceContextData } from "./discordjs-react";
+import { randomUUID } from "crypto";
 export function getNextActionRow(options: MessageOptions): ActionRow {
   let actionRow = last(options.actionRows)
   const firstItem = actionRow?.[0]
@@ -47,21 +46,14 @@ export type RendererableInteractions = MessageComponentInteraction | ChatInputCo
 
 export const LOADING_EMOJI = "<a:loading:1081524604419453028>"
 
-export type BaseInstanceData = {
-  instance: Renderer
-}
+const InstanceContext = React.createContext<Renderer | undefined>(undefined)
 
-const InstanceContext = React.createContext<{
-  data: unknown
-  setData: (data: BaseInstanceData) => void
-} | undefined>(undefined)
-
-export const useInstanceContext = () => {
-  const context = React.useContext(InstanceContext)
-  if (context === undefined) {
-    throw new Error("useInstanceContext must be used within a InstanceContext.Provider")
+export function useInstance() {
+  const instance = React.useContext(InstanceContext)
+  if (instance == undefined) {
+    throw new Error("Attempted to useInstance outside of a renderer")
   }
-  return context
+  return instance
 }
 
 export class Renderer {
@@ -69,7 +61,8 @@ export class Renderer {
   public message?: DiscordJSReactMessage
   public active = true
   public updates = new Subject<UpdatePayload>()
-  constructor(public options: RendererOptions, public client: Client, initialContent?: React.ReactNode, wrapper: RendererWrapper = (props) => <>{props.children}</>, public setInstanceContextData?: SetInstanceContextData) {
+  public rendererId = randomUUID();
+  constructor(public options: RendererOptions, public client: Client, initialContent?: React.ReactNode, wrapper: RendererWrapper = (props) => <>{props.children}</>) {
     const container = reconciler.createContainer(
       this,
       0,
@@ -83,28 +76,8 @@ export class Renderer {
       // eslint-disable-next-line unicorn/no-null
       null,
     )
-    // Can't get use instance to work so using this disgusting hack
-    const Instance = () => {
-      const [instanceContextData, updateInstanceContextData] = React.useState(setInstanceContextData?.({ instance: this }) ?? { instance: this })
-
-      function updateInstanceData<T extends BaseInstanceData>(data: T) {
-        updateInstanceContextData({
-          data: data,
-          setData: updateInstanceData
-        })
-      }
-
-      return <>
-        <InstanceContext.Provider value={{
-          data: instanceContextData,
-          setData: updateInstanceData
-        }}>
-          {initialContent}
-        </InstanceContext.Provider>
-      </>
-    }
     reconciler.updateContainer(wrapper({
-      children: <Instance />
+      children: <InstanceContext.Provider value={this}>{initialContent}</InstanceContext.Provider>
     }), container)
   }
 

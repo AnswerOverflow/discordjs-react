@@ -5,6 +5,7 @@ import { ButtonNode } from "./components/button";
 import { TestDiscordJSReactMessage } from "./test-message";
 import { LinkNode } from "./components/link";
 import { SelectNode } from "./components/select";
+import { MessageOptions } from "./message";
 export class TestRenderer extends Renderer {
   protected override trackMessage(message: Message<boolean>): void {
     this.message = new TestDiscordJSReactMessage(message, this)
@@ -17,7 +18,7 @@ export class TestRenderer extends Renderer {
       if(node.props.label !== label)
         continue
       return {
-          ...node.props,
+          ...node.getActionRowItemData(),
           click: async ({
             clicker,
             waitForInteractionToComplete = true
@@ -57,7 +58,7 @@ export class TestRenderer extends Renderer {
         continue
       if(node.props.label !== label)
         continue
-      return node.props;        
+      return node.getActionRowItemData()        
     }
   }
   public findSelectByPlaceholder(placeholder: string) {
@@ -69,7 +70,7 @@ export class TestRenderer extends Renderer {
         continue
       }
       return {
-        ...node.props,
+        ...node.getActionRowItemData(),
         select: async ({
           clicker,
           waitForInteractionToComplete = true,

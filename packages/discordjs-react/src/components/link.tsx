@@ -1,4 +1,4 @@
-import { ButtonStyle, ComponentType } from "discord.js"
+import { ActionRowComponentOptions, ButtonComponentData, ButtonStyle, ComponentType } from "discord.js"
 import React from "react"
 import { DiscordJSReactElement } from "../element"
 
@@ -31,15 +31,20 @@ export function Link({ label, children, ...props }: LinkProps) {
 }
 
 export class LinkNode extends Node<Omit<LinkProps, "children">> {
-  override modifyMessageOptions(options: MessageOptions): void {
-    getNextActionRow(options).push({
+  override getActionRowItemData(): ButtonComponentData {
+    return {
       type: ComponentType.Button,
       style: ButtonStyle.Link,
       disabled: this.props.disabled,
       emoji: this.props.emoji,
       label: this.children.findType(LinkTextNode)?.text ?? "",
       url: this.props.url,
-    })
+    }
+  }
+  override modifyMessageOptions(options: MessageOptions): void {
+    getNextActionRow(options).push(
+      this.getActionRowItemData()
+    )
   }
 }
 

@@ -1,4 +1,4 @@
-import { ButtonInteraction, ButtonStyle, ComponentType, MessageComponentInteraction } from "discord.js"
+import { ActionRowComponentOptions, ButtonComponentData, ButtonInteraction, ButtonStyle, ComponentType, MessageComponentInteraction } from "discord.js"
 import { randomUUID } from "node:crypto"
 import React from "react"
 import { DiscordJSReactElement } from "../element"
@@ -44,7 +44,7 @@ export class ButtonNode extends Node<ButtonProps> {
     return ""
   }
 
-  override modifyMessageOptions(options: MessageOptions): void {
+  override getActionRowItemData(): ButtonComponentData {
     const buttonStyle = this.props.style
     const opts: ActionRowItem = {
       type: ComponentType.Button,
@@ -54,7 +54,13 @@ export class ButtonNode extends Node<ButtonProps> {
       emoji: (this.isDeferred ? LOADING_EMOJI : this.props.emoji),
       label: this.children.findType(ButtonLabelNode)?.text
     }
-    getNextActionRow(options).push(opts)
+    return opts
+  }
+
+  override modifyMessageOptions(options: MessageOptions): void {
+    getNextActionRow(options).push(
+      this.getActionRowItemData()
+    )
   }
 
   override handleComponentInteraction(interaction: MessageComponentInteraction, onComplete: () => void) {

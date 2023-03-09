@@ -1,5 +1,5 @@
 
-import { ComponentType, MessageComponentInteraction, SelectMenuComponentOptionData, StringSelectMenuComponentData, StringSelectMenuInteraction } from "discord.js"
+import { ActionRowComponentOptions, ComponentType, MessageComponentInteraction, SelectMenuComponentOptionData, StringSelectMenuComponentData, StringSelectMenuInteraction } from "discord.js"
 import { randomUUID } from "node:crypto"
 import type { ReactNode } from "react"
 import React from "react"
@@ -83,9 +83,7 @@ export function Select(props: SelectProps) {
 export class SelectNode extends Node<SelectProps> {
   readonly customId = randomUUID()
 
-  override modifyMessageOptions(message: MessageOptions): void {
-    const actionRow: ActionRow = []
-    message.actionRows.push(actionRow)
+  override getActionRowItemData(): StringSelectMenuComponentData {
     const {
       multiple,
       value,
@@ -108,8 +106,6 @@ export class SelectNode extends Node<SelectProps> {
         default: (value === node.options.value && !this.isDeferred),
       }))
 
-
-
     const item: StringSelectMenuComponentData = {
       ...props,
       type: ComponentType.StringSelect,
@@ -130,7 +126,16 @@ export class SelectNode extends Node<SelectProps> {
       // item.values = [value]
 
     }
-    actionRow.push(item)
+    return item
+  }
+
+  override modifyMessageOptions(message: MessageOptions): void {
+    const actionRow: ActionRow = []
+    message.actionRows.push(actionRow)
+
+    actionRow.push(
+      this.getActionRowItemData()
+    )
   }
 
   override handleComponentInteraction(

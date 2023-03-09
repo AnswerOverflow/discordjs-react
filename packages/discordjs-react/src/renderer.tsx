@@ -47,10 +47,13 @@ export type RendererableInteractions = MessageComponentInteraction | ChatInputCo
 
 export const LOADING_EMOJI = "<a:loading:1081524604419453028>"
 
+export type BaseInstanceData = {
+  instance: Renderer
+}
 
 const InstanceContext = React.createContext<{
   data: unknown
-  setData: (data: unknown) => void
+  setData: (data: BaseInstanceData) => void
 } | undefined>(undefined)
 
 export const useInstanceContext = () => {
@@ -83,12 +86,14 @@ export class Renderer {
     // Can't get use instance to work so using this disgusting hack
     const Instance = () => {
       const [instanceContextData, updateInstanceContextData] = React.useState(setInstanceContextData?.({ instance: this }) ?? { instance: this })
-      const updateInstanceData = (data: unknown) => {
+
+      function updateInstanceData<T extends BaseInstanceData>(data: T) {
         updateInstanceContextData({
           data: data,
           setData: updateInstanceData
         })
       }
+
       return <>
         <InstanceContext.Provider value={{
           data: instanceContextData,

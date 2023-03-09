@@ -1,15 +1,20 @@
-import { useInstanceContext } from "@answeroverflow/discordjs-react"
+import { BaseInstanceData, useInstanceContext } from "@answeroverflow/discordjs-react"
 
-export function setInstanceContextData<T extends {}>(data: T) {
+export type InstanceData = {
+foo: string
+} & BaseInstanceData
+export function setInstanceContextData(data: BaseInstanceData): InstanceData {
 	return {
 		...data,
 		foo: "bar"
 	}
 }
 
-export type InstanceData = ReturnType<typeof setInstanceContextData>
 
 export const useCustomInstanceData = () => {
-	const { data } = useInstanceContext()
-	return data as InstanceData
+	const ctx = useInstanceContext()
+	return {
+		...ctx,
+		data: ctx.data as InstanceData
+	}
 }

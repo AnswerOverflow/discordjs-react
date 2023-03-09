@@ -1,5 +1,6 @@
 export * from "./src/discordjs-react"
-export {useInstanceContext} from "./src/renderer"
+export { useInstanceContext } from "./src/renderer"
+export type { BaseInstanceData } from "./src/renderer"
 export * from "./src/components/action-row"
 export * from "./src/components/button"
 export * from "./src/components/button-shared-props"

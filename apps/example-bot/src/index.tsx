@@ -3,6 +3,7 @@ import { container, LogLevel, SapphireClient } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord.js';
 import { ActionRow, Button, DiscordJSReact } from '@answeroverflow/discordjs-react';
 import React from 'react';
+import { setInstanceContextData } from './lib/context';
 // import { ContextProvider } from './lib/context';
 declare module "@sapphire/pieces" {
 	interface Container {
@@ -16,7 +17,7 @@ const client = new SapphireClient({
 	defaultPrefix: '!',
 	caseInsensitiveCommands: true,
 	logger: {
-		level: LogLevel.None
+		level: LogLevel.Debug
 	},
 	intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildMessages, GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent],
 	loadMessageCommandListeners: true,
@@ -24,6 +25,7 @@ const client = new SapphireClient({
 
 	}
 });
+
 
 
 const main = async () => {
@@ -35,6 +37,7 @@ const main = async () => {
 					<Button onClick={(interaction) => interaction.reply("Clicked from global app wrapper")} label="Global button" />
 				</ActionRow></>
 			},
+			setInstanceContextData
 		})
 		await client.login();
 		client.logger.info('logged in');

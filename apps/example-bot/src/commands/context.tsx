@@ -1,13 +1,19 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { Command } from '@sapphire/framework';
 import React from 'react';
+import { useCustomInstanceData } from '../lib/context';
 
 
 
 function Consumer() {
-  // const value = useContext()
-  // return <> val: {value}</>
-  return <></>
+  const value = useCustomInstanceData();
+  console.log(value)
+  console.log(value)
+  console.log(value)
+  console.log(value)
+  return <>
+    {value.foo}
+  </>
 }
 
 

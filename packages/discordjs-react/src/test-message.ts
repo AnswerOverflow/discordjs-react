@@ -10,4 +10,10 @@ export class TestDiscordJSReactMessage extends DiscordJSReactMessage {
   public findButtonByLabel(label: string) {
     return this.renderer.findButtonByLabel(label)
   }
+  public findSelectByPlaceholder(placeholder: string) {
+    return this.renderer.findSelectByPlaceholder(placeholder)
+  }
+  public findLinkByLabel(label: string) {
+    return this.renderer.findLinkByLabel(label)
+  }
 }

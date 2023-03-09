@@ -80,7 +80,7 @@ export function Select(props: SelectProps) {
   )
 }
 
-class SelectNode extends Node<SelectProps> {
+export class SelectNode extends Node<SelectProps> {
   readonly customId = randomUUID()
 
   override modifyMessageOptions(message: MessageOptions): void {

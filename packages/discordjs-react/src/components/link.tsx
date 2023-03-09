@@ -30,7 +30,7 @@ export function Link({ label, children, ...props }: LinkProps) {
   )
 }
 
-class LinkNode extends Node<Omit<LinkProps, "label" | "children">> {
+export class LinkNode extends Node<Omit<LinkProps, "children">> {
   override modifyMessageOptions(options: MessageOptions): void {
     getNextActionRow(options).push({
       type: ComponentType.Button,

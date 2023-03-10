@@ -111,7 +111,7 @@ export class SelectNode extends Node<SelectProps> {
       type: ComponentType.StringSelect,
       customId: this.customId,
       options,
-      disabled: this.isDeferred,
+      disabled: (this.props.disabled || this.isDeferred !== undefined),
 
       placeholder: this.isDeferred ? "Applying selection..." : props.placeholder,
     }
@@ -148,17 +148,21 @@ export class SelectNode extends Node<SelectProps> {
       !this.props.disabled
 
     if (!isSelectInteraction) return undefined
-    this.interaction = interaction
 
     this.interaction = interaction
     this.onComplete = onComplete
     const firstValue = interaction.values.at(0)
+
     Promise.all([
       this.props.onChangeMultiple?.(interaction.values, interaction),
       firstValue ? this.props.onChangeValue?.(firstValue, interaction) : undefined,
       this.props.onChange?.(interaction),
     ]).then(
       () => this.completeInteraction()
+    ).catch(
+      (error) => {
+        throw error
+      }
     )
 
     return this
